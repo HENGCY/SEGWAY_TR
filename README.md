@@ -11,7 +11,6 @@ Connexion:
 2.  La connexion Bluetooth de Smartphone et Raspberry Pi 
 	
 
-
 RaspberryPi3:
 ----------
 Description 
