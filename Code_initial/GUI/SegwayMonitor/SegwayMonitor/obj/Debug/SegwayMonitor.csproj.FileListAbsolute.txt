@@ -1,0 +1,9 @@
+C:\Programmation\DevPtut\SegwayMonitor\SegwayMonitor\bin\Debug\SegwayMonitor.exe.config
+C:\Programmation\DevPtut\SegwayMonitor\SegwayMonitor\obj\Debug\SegwayMonitor.csprojResolveAssemblyReference.cache
+C:\Programmation\DevPtut\SegwayMonitor\SegwayMonitor\obj\Debug\SegwayMonitor.Form1.resources
+C:\Programmation\DevPtut\SegwayMonitor\SegwayMonitor\obj\Debug\SegwayMonitor.Properties.Resources.resources
+C:\Programmation\DevPtut\SegwayMonitor\SegwayMonitor\obj\Debug\SegwayMonitor.csproj.GenerateResource.Cache
+C:\Programmation\DevPtut\SegwayMonitor\SegwayMonitor\bin\Debug\SegwayMonitor.exe
+C:\Programmation\DevPtut\SegwayMonitor\SegwayMonitor\bin\Debug\SegwayMonitor.pdb
+C:\Programmation\DevPtut\SegwayMonitor\SegwayMonitor\obj\Debug\SegwayMonitor.exe
+C:\Programmation\DevPtut\SegwayMonitor\SegwayMonitor\obj\Debug\SegwayMonitor.pdb
