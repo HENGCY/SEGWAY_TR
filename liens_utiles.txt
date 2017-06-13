@@ -6,3 +6,6 @@ http://www.framboise314.fr/le-port-serie-du-raspberry-pi-3-pas-simple/#Le_port_s
 
 Fusion d'angle:
 http://www.mouser.fr/applications/sensor_solutions_mems/
+
+Systick:
+http://www.micromouseonline.com/2016/02/02/systick-configuration-made-easy-on-the-stm32/
