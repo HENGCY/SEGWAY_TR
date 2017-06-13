@@ -3,3 +3,6 @@ http://embedded-lab.com/blog/stm32-serial-communication/
 
 Communication STM32 - USART (2):
 http://www.framboise314.fr/le-port-serie-du-raspberry-pi-3-pas-simple/#Le_port_serie_du_Raspberry_Pi_3_la_cata
+
+Fusion d'angle:
+http://www.mouser.fr/applications/sensor_solutions_mems/
