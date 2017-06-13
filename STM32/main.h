@@ -12,6 +12,10 @@
 #define __MAIN_H
 
 /* Includes ------------------------------------------------------------------*/
+#include "Init.h"
+#include "Accelerometre.h"
+#include "Gyroscope.h"
+#include "Fonctions.h"
 #include "stm32f30x.h"
 #include "stm32f3_discovery.h"
 #include <stdio.h>
@@ -28,25 +32,13 @@
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-void Demo_USB (void);
-void Demo_GyroConfig(void);
-void Demo_GyroReadAngRate (float* pfData);
-void USARTINIT(void);
-void USARTstring( const unsigned char *LCD_chaine);   //Outputs string to USART
-void Init_ADC1_DMA1(void);
-void IT_EXT_Init(void);
-void IT_DMA1_Init(void);
-void Trait_Gyro_Acc (void);
-void Demo_CompassConfig(void);
-void Demo_CompassReadMag (float* pfData);
-void Demo_CompassReadAcc(float* pfData);
-void TimingDelay_Decrement(void);
-void Delay(__IO uint32_t nTime);
-void TIM_Config(void);
-void ShutdownInit(void);
-
 
 
 #endif /* __MAIN_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+int main(void);
+void Delay(__IO uint32_t nTime);
+void TimingDelay_Decrement(void);
+void assert_failed(uint8_t* file, uint32_t line);
