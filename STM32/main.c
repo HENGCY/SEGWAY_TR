@@ -73,34 +73,35 @@
 /* Private define ------------------------------------------------------------*/
 
 /* Private macro -------------------------------------------------------------*/
-#define ABS(x)         (x < 0) ? (-x) : x
 
-#define L3G_Sensitivity_250dps     (float)   114.285f         /*!< gyroscope sensitivity with 250 dps full scale [LSB/dps] */
-#define L3G_Sensitivity_500dps     (float)    57.1429f        /*!< gyroscope sensitivity with 500 dps full scale [LSB/dps] */
-#define L3G_Sensitivity_2000dps    (float)    14.285f	      /*!< gyroscope sensitivity with 2000 dps full scale [LSB/dps] */
+// #define ABS(x)         (x < 0) ? (-x) : x
 
-/* Mettre 250 avec 250 ou 500 avec 500  ou 2000 avec 2000 :*/
-#define L3G_Sensitivity L3G_Sensitivity_500dps 
-#define L3GD20_SCALE     L3GD20_FULLSCALE_500 // L3GD20_FULLSCALE_250 L3GD20_FULLSCALE_500   L3GD20_FULLSCALE_2000 
+// #define L3G_Sensitivity_250dps     (float)   114.285f         /*!< gyroscope sensitivity with 250 dps full scale [LSB/dps] */
+// #define L3G_Sensitivity_500dps     (float)    57.1429f        /*!< gyroscope sensitivity with 500 dps full scale [LSB/dps] */
+// #define L3G_Sensitivity_2000dps    (float)    14.285f	      /*!< gyroscope sensitivity with 2000 dps full scale [LSB/dps] */
 
-#define PI                         (float)     3.14159265f 
+// /* Mettre 250 avec 250 ou 500 avec 500  ou 2000 avec 2000 :*/
+// #define L3G_Sensitivity L3G_Sensitivity_500dps 
+// #define L3GD20_SCALE     L3GD20_FULLSCALE_500 // L3GD20_FULLSCALE_250 L3GD20_FULLSCALE_500   L3GD20_FULLSCALE_2000 
 
-#define LSM_Acc_Sensitivity_2g     (float)     1.0f            /*!< accelerometer sensitivity with 2 g full scale [LSB/mg] */
-#define LSM_Acc_Sensitivity_4g     (float)     0.5f            /*!< accelerometer sensitivity with 4 g full scale [LSB/mg] */
-#define LSM_Acc_Sensitivity_8g     (float)     0.25f           /*!< accelerometer sensitivity with 8 g full scale [LSB/mg] */
-#define LSM_Acc_Sensitivity_16g    (float)     0.0834f         /*!< accelerometer sensitivity with 12 g full scale [LSB/mg] */
-#define Deltatps                   (float)     0.010526f       /*!< Delta t du Gyro  = 1/95 HZ */
-#define ScaleADC                    3000                       /*pleine echelle ADC 3V */
+// #define PI                         (float)     3.14159265f 
 
-#define facteur_prescaler 1 // facteur pour TIMER 15
-#define Freq_PWM 25000// frequence PWM en Hz  
-#define Freq_SYS 72000000// frequence systeme
-#define PWM50  (Freq_SYS/(2*Freq_PWM))// initielisation compteur Timer pour 50 %
-#define SHDNM1 GPIO_Pin_6 //shutdown moteur 1 PC6
-#define SHDNM2 GPIO_Pin_7 //shutdown moteur 1 PC7
-#define CMD_ALIM GPIO_Pin_8//Commande alim générale
-#define COEFI1  (float) 1.71283f // attenuateur capteur courant moteur 1  = 2.523/1.473 sortie capteur/ entrée mesure à vide in ADC
-#define COEFI2  (float) 1.71584f // attenuateur capteur courant moteur 2  = 2.512/1.464 sortie capteur/ entrée mesure à vide in ADC
+// #define LSM_Acc_Sensitivity_2g     (float)     1.0f            /*!< accelerometer sensitivity with 2 g full scale [LSB/mg] */
+// #define LSM_Acc_Sensitivity_4g     (float)     0.5f            /*!< accelerometer sensitivity with 4 g full scale [LSB/mg] */
+// #define LSM_Acc_Sensitivity_8g     (float)     0.25f           /*!< accelerometer sensitivity with 8 g full scale [LSB/mg] */
+// #define LSM_Acc_Sensitivity_16g    (float)     0.0834f         /*!< accelerometer sensitivity with 12 g full scale [LSB/mg] */
+// #define Deltatps                   (float)     0.010526f       /*!< Delta t du Gyro  = 1/95 HZ */
+// #define ScaleADC                    3000                       /*pleine echelle ADC 3V */
+
+// #define facteur_prescaler 1 // facteur pour TIMER 15
+// #define Freq_PWM 25000// frequence PWM en Hz  
+// #define Freq_SYS 72000000// frequence systeme
+// #define PWM50  (Freq_SYS/(2*Freq_PWM))// initielisation compteur Timer pour 50 %
+// #define SHDNM1 GPIO_Pin_6 //shutdown moteur 1 PC6
+// #define SHDNM2 GPIO_Pin_7 //shutdown moteur 1 PC7
+// #define CMD_ALIM GPIO_Pin_8//Commande alim générale
+// #define COEFI1  (float) 1.71283f // attenuateur capteur courant moteur 1  = 2.523/1.473 sortie capteur/ entrée mesure à vide in ADC
+// #define COEFI2  (float) 1.71584f // attenuateur capteur courant moteur 2  = 2.512/1.464 sortie capteur/ entrée mesure à vide in ADC
 
 /* Private variables ---------------------------------------------------------*/
 /*RCC_ClocksTypeDef RCC_Clocks;
@@ -110,15 +111,17 @@ ADC_InitTypeDef       ADC_InitStructure;
 ADC_CommonInitTypeDef ADC_CommonInitStructure;
 DMA_InitTypeDef DMA_InitStructure;
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
-TIM_OCInitTypeDef  TIM_OCInitStructure;*/
+TIM_OCInitTypeDef  TIM_OCInitStructure;
+*/
 
 /* Déclarations chaines caracteres a transmettre */	
+/*
 uint8_t lin [17]    = "  ADC:         V";// ADC test RS232C
 uint8_t lin1 [17]   = "Fusio:       deg";
 uint8_t TX_USART [46]   = "M0:+0000M1:+0000M2:+0000M3:+0000M4:+0000ST:20\r"; //Buffer emission
 uint8_t RX_USART [10]   = ""; //Buffer reception
 uint8_t ST[2]   = "XX"; //test RX serie
-
+*/
 /*Status de fonctionnement ST:
 00: ras
 01: low bat
@@ -134,6 +137,8 @@ uint8_t ST[2]   = "XX"; //test RX serie
 */
 
 /*ADC1 DMA1 variables */
+
+/*
 __IO uint32_t  ADC1ConvertedValue = 0, ADC1ConvertedVoltage = 0;
 __IO uint16_t Acq_ADC1[6], calibration_value = 0;
 __IO uint16_t MOY_ADC12_IN6 = 0, MOY_ADC12_IN7 = 0, MOY_ADC12_IN8 = 0, MOY_ADC12_IN9 =0,MOY_ADC1_IN2 =0,MOY_ADC1_IN5 =0;;// variables lectures ADC moyennees de Acq_ADC1[4]
@@ -163,7 +168,7 @@ uint16_t PWM_MOTEUR1 = PWM50 ;// 50% PWM Moteur PA8  PA11
 uint16_t PWM_MOTEUR2 = PWM50 ;// 50% PWM Moteur PA9  PA12
 //Variables calcul
 uint16_t Tampon1 = 0 ; 
-
+*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -174,9 +179,10 @@ uint16_t Tampon1 = 0 ;
   */
 int main(void)
 {  
+
   uint8_t i = 0;
 	/* conf lignes PortC, commande alim général et arrêt moteurs	*/
-	ShutdownInit();// conf lignes PortC, commande alim général et arrêt moteurs
+	Init_shutdown();// conf lignes PortC, commande alim général et arrêt moteurs
 	
   /* Retourne fréquence systeme */
 	RCC_GetClocksFreq(&RCC_Clocks);
@@ -220,13 +226,14 @@ int main(void)
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_ADC12, ENABLE);//ADC1 et ADC2 clock en commun
       
   Init_ADC1_DMA1();
-  IT_DMA1_Init();
+  Init_IT_DMA1();
   NVIC_SetPriority(DMA1_Channel1_IRQn, 1);// priorite 1
 	/*Initialisation USART2*/
   Delay(50000);//0.5s
-	USARTINIT();
+	Init_USART();
 	/*Initialisation TIMER15 & 1*/
-  TIM_Config();//initialisation TIMER15 pour PWM
+  TIM_Config();
+	//initialisation TIMER15 pour PWM
   /* Reset UserButton_Pressed variable */
 	//   UserButtonPressed = 0x00; 
    
@@ -246,16 +253,16 @@ int main(void)
    
   /* Initialisation LSM303DLHC  Accelerometres            */
 		
-	  Demo_CompassConfig();
+	  Acc_config();
 
   /* Initialisation Gyroscope L3GD20  L3GD20_FULLSCALE_500*/
 
-    Demo_GyroConfig();
+    Gyro_config();
 	  Delay(100000);//1s
 		
   /* Zero accX, compensation avant le gyro important*/	
 		
-		Demo_CompassReadAcc(AccBuffer);
+		Acc_read(AccBuffer);
 		
 		
 	/************************/ 
@@ -267,7 +274,7 @@ int main(void)
  		ZeroACCX = -37;// cal mémorisé sur le zero accelero, le max est moins utile 
   /* Mise à 0 de la ligne INT2 de L3GD20 sur in PE1	par lecture d'une  mesure*/	
 
-		Demo_GyroReadAngRate(Buffer);
+		Gyro_read(Buffer);
 		STM_EVAL_LEDOn(LED7);	
   /* Zero du gyro, compensation*/	
 
@@ -275,7 +282,7 @@ int main(void)
 		
   /* Initialisation de ligne INT2 en IT du gyro sur PE1 */
 	// Delay(100000);//1s
-		IT_EXT_Init();
+		Init_IT_EXT();
 		NVIC_SetPriority(EXTI1_IRQn, 2);// priorité 2 INT2 en IT du gyro sur PE1
 		Anglegyro =0;
 	/************************/ 
@@ -326,80 +333,6 @@ int main(void)
   *PC8 Activation alim générale : CMD_ALIM
 	*
 */
-
-/**
-  * @brief  Inserts a delay time.
-  * @param  nTime: specifies the delay time length, in 10 ms.
-  * @retval None
-  */
-void Delay(__IO uint32_t nTime)
-{
-  TimingDelay = nTime;
-
-  while(TimingDelay != 0);
-}
-
-/**
-  * @brief  Traitement donnee Gyro, Accelero et ADC
-  * @param   
-  * @retval  
-  */
-
-GPIO_SetBits(GPIOC,SHDNM1 | SHDNM2);// moteurs 1&2 ON
-
-
-if (((ST[0]<58) && (ST[0]>47))&&((ST[1]<58) && (ST[1]>47)))// test 00 à 99 ASCII
-{
-	Tampon1 =(2* PWM50*( (ST[0]-48)*10 +  ST[1]-48))/100;// conversion en %
-	PWM_MOTEUR1 = Tampon1;
-	PWM_MOTEUR2 = Tampon1;
-
-	TIM_SetCompare1( TIM1,  PWM_MOTEUR1);// ecriture de CCR1 de 16 bits
-	TIM_SetCompare2( TIM1,  PWM_MOTEUR2);// ecriture de CCR2 de 16 bits
-		
-}
-
-//***********************************
-			
-      STM_EVAL_LEDOff(LED10);//Test fin de calcul
-			
-//***********************************
-}
-
-
-/**
-  * @brief  Decrements the TimingDelay variable.
-  * @param  None
-  * @retval None
-  */
-void TimingDelay_Decrement(void)
-{
-  if (TimingDelay != 0x00)
-  { 
-    TimingDelay--;
-  }
-}
-
-/**
-  * @brief  Basic management of the timeout situation.
-  * @param  None.
-  * @retval None.
-  */
-uint32_t LSM303DLHC_TIMEOUT_UserCallback(void)
-{
-  return 0;
-}
-
-/**
-  * @brief  Basic management of the timeout situation.
-  * @param  None.
-  * @retval None.
-  */
-uint32_t L3GD20_TIMEOUT_UserCallback(void)
-{
-  return 0;
-}
-
 #ifdef  USE_FULL_ASSERT
 
 /**
