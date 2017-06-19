@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    main.c  
   * @author  INSA
-  * @version V1.1.0 Fusion de donnees (Gyro et Accelero) - USART - ADC
-  * @date    Avil- mai 2017 
+  * @version V1.2 Mis en propre
+  * @date    13-Juin-2017
   * @brief    
   ******************************************************************************
   * @attention
@@ -22,16 +22,14 @@
   *PA3 USART2 TX
   *PA2 USART2 RX  
   *  
-  *
 	*PWM1 Moteur 1
   *PA8 est TIM1_CH1  AF6
   *PA11 est TIM1_CH1N AF6    SB22 à souder carte Dicovery   
-	
   *  
  	*PWM2 Moteur 2
   *PA9 est TIM1_CH2 AF6
   *PA12 est TIM1_CH2N AF6    SB21 à souder carte Dicovery  
-	
+	*
   *SHUTDOWN MOTEUR 1 & 2 actif 0
 	*PC6 Shutdown Moteur 1 
 	*PC7 Shutdown Moteur 2 
@@ -68,60 +66,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-/* Private typedef -----------------------------------------------------------*/
 
-/* Private define ------------------------------------------------------------*/
-
-/* Private macro -------------------------------------------------------------*/
-
-// #define ABS(x)         (x < 0) ? (-x) : x
-
-// #define L3G_Sensitivity_250dps     (float)   114.285f         /*!< gyroscope sensitivity with 250 dps full scale [LSB/dps] */
-// #define L3G_Sensitivity_500dps     (float)    57.1429f        /*!< gyroscope sensitivity with 500 dps full scale [LSB/dps] */
-// #define L3G_Sensitivity_2000dps    (float)    14.285f	      /*!< gyroscope sensitivity with 2000 dps full scale [LSB/dps] */
-
-// /* Mettre 250 avec 250 ou 500 avec 500  ou 2000 avec 2000 :*/
-// #define L3G_Sensitivity L3G_Sensitivity_500dps 
-// #define L3GD20_SCALE     L3GD20_FULLSCALE_500 // L3GD20_FULLSCALE_250 L3GD20_FULLSCALE_500   L3GD20_FULLSCALE_2000 
-
-// #define PI                         (float)     3.14159265f 
-
-// #define LSM_Acc_Sensitivity_2g     (float)     1.0f            /*!< accelerometer sensitivity with 2 g full scale [LSB/mg] */
-// #define LSM_Acc_Sensitivity_4g     (float)     0.5f            /*!< accelerometer sensitivity with 4 g full scale [LSB/mg] */
-// #define LSM_Acc_Sensitivity_8g     (float)     0.25f           /*!< accelerometer sensitivity with 8 g full scale [LSB/mg] */
-// #define LSM_Acc_Sensitivity_16g    (float)     0.0834f         /*!< accelerometer sensitivity with 12 g full scale [LSB/mg] */
-// #define Deltatps                   (float)     0.010526f       /*!< Delta t du Gyro  = 1/95 HZ */
-// #define ScaleADC                    3000                       /*pleine echelle ADC 3V */
-
-// #define facteur_prescaler 1 // facteur pour TIMER 15
-// #define Freq_PWM 25000// frequence PWM en Hz  
-// #define Freq_SYS 72000000// frequence systeme
-// #define PWM50  (Freq_SYS/(2*Freq_PWM))// initielisation compteur Timer pour 50 %
-// #define SHDNM1 GPIO_Pin_6 //shutdown moteur 1 PC6
-// #define SHDNM2 GPIO_Pin_7 //shutdown moteur 1 PC7
-// #define CMD_ALIM GPIO_Pin_8//Commande alim générale
-// #define COEFI1  (float) 1.71283f // attenuateur capteur courant moteur 1  = 2.523/1.473 sortie capteur/ entrée mesure à vide in ADC
-// #define COEFI2  (float) 1.71584f // attenuateur capteur courant moteur 2  = 2.512/1.464 sortie capteur/ entrée mesure à vide in ADC
-
-/* Private variables ---------------------------------------------------------*/
-/*RCC_ClocksTypeDef RCC_Clocks;
-GPIO_InitTypeDef  GPIO_InitStructure;	
-USART_InitTypeDef USART_InitStructure;
-ADC_InitTypeDef       ADC_InitStructure;
-ADC_CommonInitTypeDef ADC_CommonInitStructure;
-DMA_InitTypeDef DMA_InitStructure;
-TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
-TIM_OCInitTypeDef  TIM_OCInitStructure;
-*/
-
-/* Déclarations chaines caracteres a transmettre */	
-/*
-uint8_t lin [17]    = "  ADC:         V";// ADC test RS232C
-uint8_t lin1 [17]   = "Fusio:       deg";
-uint8_t TX_USART [46]   = "M0:+0000M1:+0000M2:+0000M3:+0000M4:+0000ST:20\r"; //Buffer emission
-uint8_t RX_USART [10]   = ""; //Buffer reception
-uint8_t ST[2]   = "XX"; //test RX serie
-*/
 /*Status de fonctionnement ST:
 00: ras
 01: low bat
@@ -136,41 +81,6 @@ uint8_t ST[2]   = "XX"; //test RX serie
 99 : ...
 */
 
-/*ADC1 DMA1 variables */
-
-/*
-__IO uint32_t  ADC1ConvertedValue = 0, ADC1ConvertedVoltage = 0;
-__IO uint16_t Acq_ADC1[6], calibration_value = 0;
-__IO uint16_t MOY_ADC12_IN6 = 0, MOY_ADC12_IN7 = 0, MOY_ADC12_IN8 = 0, MOY_ADC12_IN9 =0,MOY_ADC1_IN2 =0,MOY_ADC1_IN5 =0;;// variables lectures ADC moyennees de Acq_ADC1[4]
-__IO int32_t  IM1,IM2,VIM10,VIM20;
-__IO uint32_t TimingDelay = 0, toto;
-__IO uint32_t UserButtonPressed = 0;
-// __IO float HeadingValue = 0.0f;  
-
-float MagBuffer[3] = {0.0f}, AccBuffer[3] = {0.0f}, Buffer[3] = {0.0f};
-float Anglegyro = 0.0f;// calcule de l'angle a partir de d °/seconde
-float Anglemesure = 0.0f;// calcule de l'angle fusionné
-float VitesseAngle = 0.0f;// vitesse angulaire
-
-float Zerogyro = 0.0f;// zero du gyro
-float ZeroACCX = 0.0f;// zero accelero X
-
-float Angleacc = 0.0f;// calcule de l'angle a partir de tangente inverse
-uint16_t Xval, Yval, Zval = 0x00;
-uint16_t Angleval = 0x00;
-
-__IO uint8_t DataReady = 0;
-__IO uint8_t PrevXferComplete = 1;
-__IO uint32_t USBConnectTimeOut = 100;
-//TIMER ET PWM
-uint16_t TimerPeriod = 0;
-uint16_t PWM_MOTEUR1 = PWM50 ;// 50% PWM Moteur PA8  PA11
-uint16_t PWM_MOTEUR2 = PWM50 ;// 50% PWM Moteur PA9  PA12
-//Variables calcul
-uint16_t Tampon1 = 0 ; 
-*/
-/* Private function prototypes -----------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/
 
 /**
   * @brief  Main program.
@@ -199,7 +109,7 @@ int main(void)
   STM_EVAL_LEDInit(LED8);
   STM_EVAL_LEDInit(LED9);
   STM_EVAL_LEDInit(LED10);
-  STM_EVAL_LEDOn(LED3);	
+  //STM_EVAL_LEDOn(LED3);	
 
 	//  STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI); 
 	// 	NVIC_SetPriority(EXTI0_IRQn, 0);// priorité 0 pour l'IT du bouton
@@ -235,7 +145,7 @@ int main(void)
   TIM_Config();
 	//initialisation TIMER15 pour PWM
   /* Reset UserButton_Pressed variable */
-	//   UserButtonPressed = 0x00; 
+	//UserButtonPressed = 0x00; 
    
   /* Infinite loop */
   while (1)
@@ -316,23 +226,7 @@ int main(void)
   }
 }
 
-/**
-  * @brief  Configure the L3GD2 to gyroscope application.
-  * @param  Sensibilité ±250/±500/ ±2000 dps SPI 
-  * @param  Digital output data rate (ODR) 95/190/380/760
-  */
- 
 
-/*Initialisations des lignes shutdown */
-/*
-  *SHUTDOWN MOTEUR 1 & 2 actif 0
-	*PC6 Shutdown Moteur 1 :  SHDNM1
-	*PC7 Shutdown Moteur 2 :  SHDNM2
-	*
-  *SHUTDOWN GENERAL COMMANDE ALIM actif 0
-  *PC8 Activation alim générale : CMD_ALIM
-	*
-*/
 #ifdef  USE_FULL_ASSERT
 
 /**
@@ -353,3 +247,5 @@ void assert_failed(uint8_t* file, uint32_t line)
   }
 }
 #endif
+
+/************************ (C) COPYRIGHT INSA TOULOUSE ************************/
