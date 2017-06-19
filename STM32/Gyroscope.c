@@ -3,13 +3,15 @@
   * @file    Gyroscope.c  
   * @author  INSA Toulouse
   * @version V1.0 
-  * @date    13 Juin 2017 
-  * @brief    
+  * @date    13-Juin-2017   
   ******************************************************************************
-*/
-/*Includes ------------------------------------------------------------------*/
+  */
+
+/* Includes ------------------------------------------------------------------*/
 #include "Gyroscope.h"
 
+
+/* Functions ------------------------------------------------------------------*/
 /**
   * @brief  Configure the L3GD2 to gyroscope application.
   * @param  Sensibilité ±250/±500/ ±2000 dps SPI 
@@ -52,7 +54,6 @@ void Gyro_config(void)
 	// Data ready	configuration de INT2
   L3GD20_INT2InterruptCmd(L3GD20_INT2INTERRUPT_ENABLE );// Activation de INT2 sortie du L3GD20
 }
-
 
 /**
   * @brief  Calculate the angular Data rate Gyroscope.

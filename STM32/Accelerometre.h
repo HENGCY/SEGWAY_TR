@@ -4,20 +4,16 @@
   * @author  INSA Toulouse
   * @version V1.0
   * @date    13-Juin-2017
+	* @brief   Header for Gyroscope.c
   ******************************************************************************
   */
+	
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __ACCELEROMETRE_H
 #define __ACCELEROMETRE_H
 
 /* Includes ------------------------------------------------------------------*/
-//#include <stdio.h>
-//#include "stm32f30x.h"
-//#include "stm32f3_discovery.h"
 #include "stm32f3_discovery_lsm303dlhc.h"
-//#include "stm32f30x_gpio.h"
-//#include "hw_config.h"
-
 
 /* Private define ------------------------------------------------------------*/
 #define LSM_Acc_Sensitivity_2g     (float)     1.0f            /*!< accelerometer sensitivity with 2 g full scale [LSB/mg] */

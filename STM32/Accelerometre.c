@@ -10,6 +10,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "Accelerometre.h"
 
+/* Functions ------------------------------------------------------------------*/
 /**
   * @brief  Configure the Mems to compass application.
   * @param  None
@@ -85,7 +86,14 @@ void Acc_read(float* pfData)
 
 }
 
+/**
+  * @brief  Basic management of the timeout situation.
+  * @param  None.
+  * @retval None.
+  */
 uint32_t Acc_TIMEOUT_UserCallback(void)
 {
   return 0;
 }
+
+/************************ (C) COPYRIGHT INSA TOULOUSE ************************/

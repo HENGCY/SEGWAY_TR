@@ -6,13 +6,12 @@
   * @date    13-Juin-2017
   ******************************************************************************
   */
+	
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __INIT_H
 #define __INIT_H
 
 /* Includes ------------------------------------------------------------------*/
-
-
 #include "stm32f30x.h"
 #include "stm32f3_discovery.h"
 #include "platform_config.h"
@@ -22,7 +21,7 @@
 #include "usb_lib.h"
 
 
-/* Private define ------------------------------------------------------------*/
+/* Define ------------------------------------------------------------*/
 #define SHDNM1 GPIO_Pin_6 //shutdown moteur 1 PC6
 #define SHDNM2 GPIO_Pin_7 //shutdown moteur 1 PC7
 #define CMD_ALIM GPIO_Pin_8//Commande alim générale
@@ -30,9 +29,12 @@
 #define Freq_PWM 25000// frequence PWM en Hz  
 #define Freq_SYS 72000000// frequence systeme
 #define PWM50  (Freq_SYS/(2*Freq_PWM))// initielisation compteur Timer pour 50 %
+/*
+#define Freq_e 2000 
+#define Te 1/Freq_e 
+*/
 
-
-/* Private typedef ---------------------------------------------------------*/
+/* Global typedef ---------------------------------------------------------*/
   extern RCC_ClocksTypeDef RCC_Clocks;
 	extern GPIO_InitTypeDef  GPIO_InitStructure;	
   extern USART_InitTypeDef USART_InitStructure;
@@ -41,47 +43,37 @@
   extern DMA_InitTypeDef DMA_InitStructure;
   extern TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 	extern TIM_OCInitTypeDef  TIM_OCInitStructure;
+	extern 	NVIC_InitTypeDef nvicStructure;
+//	extern	TIM_TimeBaseInitTypeDef timerInitStructure; 
 	
-/* Private varaible ---------------------------------------------------------*/
+/* Definition of Global varaible ---------------------------------------------*/
 	extern __IO uint16_t Acq_ADC1[6];
 	extern __IO uint16_t calibration_value;
 
 	/* mes déclarations  chaines caracteres a transmettre */	
 	extern uint8_t TX_USART [46];
-	//uint8_t TX_USART [46] = "M0:+0000M1:+0000M2:+0000M3:+0000M4:+0000ST:20\r"; //Buffer emission
-
 	extern uint8_t lin [17] ;  
 	extern uint8_t lin1 [17] ; 
 	extern uint8_t RX_USART [10];
 	extern uint8_t ST[2] ; 
-		
-// 		uint8_t lin [17]    = "  ADC:         V";// ADC test RS232C
-// 		uint8_t lin1 [17]   = "Fusio:       deg";
-// 		uint8_t RX_USART [10]   = ""; //Buffer reception
-// 		uint8_t ST[2]   = "XX"; //test RX serie
 
 	//TIMER ET PWM
 	extern uint16_t TimerPeriod; 
 	extern uint16_t PWM_MOTEUR1;
 	extern uint16_t PWM_MOTEUR2; 
 	extern __IO uint32_t TimingDelay ;
-		
-// 		uint16_t TimerPeriod = 0;
-// 		uint16_t PWM_MOTEUR1 = PWM50 ;// 50% PWM Moteur PA8  PA11
-// 		uint16_t PWM_MOTEUR2 = PWM50 ;// 50% PWM Moteur PA9  PA12
-// 		__IO uint32_t TimingDelay = 0, toto;
-
 
 
 /* Exported functions ------------------------------------------------------- */
-void Init_shutdown(void);
-void Init_IT_EXT(void);
-void Init_IT_DMA1(void);
-void Init_ADC1_DMA1(void);
-void Init_USART(void);
-void TIM_Config(void);
-void Delay(__IO uint32_t nTime);
-void TimingDelay_Decrement(void);
+	void Init_shutdown(void);
+	void Init_IT_EXT(void);
+	void Init_IT_DMA1(void);
+	void Init_ADC1_DMA1(void);
+	void Init_USART(void);
+	void TIM_Config(void);
+	void Delay(__IO uint32_t nTime);
+	void TimingDelay_Decrement(void);
 
 #endif /* __INIT_H */
 
+/************************ (C) COPYRIGHT INSA TOULOUSE ************************/

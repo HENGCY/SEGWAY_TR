@@ -10,6 +10,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "Init.h"
 
+/* Initialisation of Global TypeDef ---------------------------------------------*/
    RCC_ClocksTypeDef RCC_Clocks;
 	 GPIO_InitTypeDef  GPIO_InitStructure;	
    USART_InitTypeDef USART_InitStructure;
@@ -17,9 +18,11 @@
    ADC_CommonInitTypeDef ADC_CommonInitStructure;
    DMA_InitTypeDef DMA_InitStructure;
    TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+	 //TIM_TimeBaseInitTypeDef  timerInitStructure;
+	 NVIC_InitTypeDef nvicStructure;
 	 TIM_OCInitTypeDef  TIM_OCInitStructure;
-
-//Test 
+	 
+/* Initialisation of Global varaible ---------------------------------------------*/
 	  __IO uint16_t Acq_ADC1[6];
 		__IO uint16_t calibration_value=0;
 		uint8_t TX_USART [46] = "M0:+0000M1:+0000M2:+0000M3:+0000M4:+0000ST:20\r"; //Buffer emission
@@ -32,17 +35,20 @@
 		uint16_t PWM_MOTEUR2 = PWM50 ;// 50% PWM Moteur PA9  PA12
 		__IO uint32_t TimingDelay = 0, toto;
 
-
-/*Initialisations des lignes shutdown */
-/*
- *SHUTDOWN MOTEUR 1 & 2 actif 0
- *PC6 Shutdown Moteur 1 :  SHDNM1
- *PC7 Shutdown Moteur 2 :  SHDNM2
- *
- *SHUTDOWN GENERAL COMMANDE ALIM actif 0
- *PC8 Activation alim générale : CMD_ALIM
- *
- */
+ 
+ /* Functions ------------------------------------------------------------------*/
+/**
+  * @brief  Initialisations des lignes shutdown.
+  * @param  None
+  * @retval None
+	*SHUTDOWN MOTEUR 1 & 2 actif 0
+	*PC6 Shutdown Moteur 1 :  SHDNM1
+	*PC7 Shutdown Moteur 2 :  SHDNM2
+	*
+	*SHUTDOWN GENERAL COMMANDE ALIM actif 0
+	*PC8 Activation alim générale : CMD_ALIM
+	*
+	*/
 void	Init_shutdown(void)
 {
 	/* GPIODPeriph clock enable */
@@ -60,6 +66,11 @@ void	Init_shutdown(void)
 	GPIO_ResetBits(GPIOC,SHDNM1 | SHDNM2);// Arret des moteurs par '0'	
 }
 
+/**
+  * @brief  Initialisations des interruptions.
+  * @param  None
+  * @retval None
+	*/
 void Init_IT_EXT(void)
 {
   EXTI_InitTypeDef   EXTI_InitStructure;
@@ -90,13 +101,18 @@ void Init_IT_EXT(void)
 
   /* Enable and set EXTI0 Interrupt to the lowest priority */
   NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQn;//EXTI0_IRQn
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
 }
 
+/**
+  * @brief  Initialisations d'interruption DMA1.
+  * @param  None
+  * @retval None
+	*/
 void Init_IT_DMA1(void)
 {
 	NVIC_InitTypeDef   NVIC_InitStructure;
@@ -108,6 +124,11 @@ void Init_IT_DMA1(void)
 	DMA_ITConfig(DMA1_Channel1, DMA1_IT_TC1, ENABLE);//activation
 }
 
+/**
+  * @brief  Initialisations d'ADC1 par DMA1.
+  * @param  None
+  * @retval None
+	*/
 void Init_ADC1_DMA1(void)
 {	
   /* ADC Channel configuration */
@@ -213,7 +234,11 @@ void Init_ADC1_DMA1(void)
   ADC_StartConversion(ADC1);   
  	
 }
-
+/**
+  * @brief  Initialisations d'USART.
+  * @param  None
+  * @retval None
+	*/
 void Init_USART(void)
 {
   NVIC_InitTypeDef      NVIC_InitStructure;
@@ -289,9 +314,14 @@ void Init_USART(void)
 	// DMA_Cmd(DMA1_Channel7, ENABLE);//start envoi buffer 
 
 }
+
+/**
+  * @brief  Initialisations des timers
+	* @param  None
+  * @retval None
+	*/
 void TIM_Config(void)
 {
-  
   /* -----------------------------------------------------------------------
 	
 	  TIM1 Configuration: Output Compare 1 MOTEUR 1
@@ -316,13 +346,10 @@ void TIM_Config(void)
 	  Base de 72Mhz et facteur_prescaler= 1
 	  TimerPeriod = (3600/facteur_prescaler)-1 =3599
 	
-	
   ----------------------------------------------------------------------- */   
-//  TimerPeriod de 16 bits <65535 
-// et on par contre interet à avoir TimerPeriode le plus grand possible pour augmenter la résolution de la PWM
-// en choisissant le bon prescaler.
-
-
+	//  TimerPeriod de 16 bits <65535 
+	// et on par contre interet à avoir TimerPeriode le plus grand possible pour augmenter la résolution de la PWM
+	// en choisissant le bon prescaler.
 
 
 	/*CONFIGURATION DU TMER 1 MOTEUR 2 */
@@ -346,7 +373,7 @@ void TIM_Config(void)
 	// 72000000 
   TimerPeriod = (SystemCoreClock / (Freq_PWM * facteur_prescaler)) - 1; //
 
- /* TIMER1 Base configuration */
+	/* TIMER1 Base configuration */
   TIM_TimeBaseStructure.TIM_Prescaler = facteur_prescaler - 1;//0 donne 1
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBaseStructure.TIM_Period = TimerPeriod;
@@ -354,8 +381,8 @@ void TIM_Config(void)
   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
   TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
 	
-/* Channel 1 de TIMER1 compare output control OC1 & OC1N  Configuration in PWM mode */
-//Moteur 1
+	/* Channel 1 de TIMER1 compare output control OC1 & OC1N  Configuration in PWM mode */
+	//Moteur 1
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
@@ -369,8 +396,8 @@ void TIM_Config(void)
   /* TIM1 Main Output Enable */
   TIM_CtrlPWMOutputs(TIM1, ENABLE);
 	
-/* Channel 2 de TIMER1 compare output control OC2 & OC2N  Configuration in PWM mode */
-//Moteur 2
+	/* Channel 2 de TIMER1 compare output control OC2 & OC2N  Configuration in PWM mode */
+	//Moteur 2
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
@@ -382,20 +409,19 @@ void TIM_Config(void)
   TIM_OC2Init(TIM1, &TIM_OCInitStructure);
   TIM_OC2PreloadConfig(TIM1, TIM_OCPreload_Enable);// préchargement pour eviter chargement immediat et pertuber la sortie
 
-
-
-/* TIM1 Main Output Enable */
+	/* TIM1 Main Output Enable */
   TIM_CtrlPWMOutputs(TIM1, ENABLE);
-	  /* TIM1 counter enable */
+	/* TIM1 counter enable */
   TIM_Cmd(TIM1, ENABLE);
-//Chargement 
+	//Chargement 
 	TIM_SetCompare1( TIM1,  PWM_MOTEUR1);// ecriture de CCR1 de 16 bits
 	TIM_SetCompare2( TIM1,  PWM_MOTEUR2);// ecriture de CCR2 de 16 bits
 
-/*******************************************************************************************************************************/
-// TIMER 15 est désactivé :
+	/*******************************************************************************************************************************/
+	// TIMER 15 est désactivé :
 	/*CONFIGURATION DU TMER 15  */
   /* Clock for GPIOB & TIMER15*/
+	
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM15 , ENABLE);//TIM15 actif
 
@@ -409,46 +435,74 @@ void TIM_Config(void)
   /* Alternating functions for pins */
   GPIO_PinAFConfig(GPIOB, GPIO_PinSource14, GPIO_AF_1);//PB14 est TIM5_CH1  AF1 mappage
   GPIO_PinAFConfig(GPIOB, GPIO_PinSource15, GPIO_AF_2);//PB15 est TIM5_CH1N AF2 mappage
-  /* Clock for TIM15*/
-	// 72000000 
-  TimerPeriod = (SystemCoreClock / (Freq_PWM * facteur_prescaler)) - 1; //
-
- /* Time Base configuration */
-  TIM_TimeBaseStructure.TIM_Prescaler = facteur_prescaler - 1;//0 donne 1
-  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseStructure.TIM_Period = TimerPeriod;
-  TIM_TimeBaseStructure.TIM_ClockDivision = 0; 
-  TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-  TIM_TimeBaseInit(TIM15, &TIM_TimeBaseStructure);
 	
-/* Channel 1 compare output control OC1 & OC1N  Configuration in PWM mode */
-  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
-  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
-  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCNPolarity_High;
-  TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;//  TIM_OCNPolarity_High
-  TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;//TIM_OCIdleState_Set
-  TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Set;// TIM_OCIdleState_Reset
-  TIM_OCInitStructure.TIM_Pulse = PWM_MOTEUR1;// a supprimer ou a initialiser
-  TIM_OC1Init(TIM15, &TIM_OCInitStructure);
+//   /* Clock for TIM15*/
+// 	// 72000000 
+//   TimerPeriod = (SystemCoreClock / (Freq_PWM * facteur_prescaler)) - 1; //
 
-TIM_OC1PreloadConfig(TIM15, TIM_OCPreload_Enable);// préchargement pour eviter chargement immediat et pertuber la sortie
+// 	/* Time Base configuration */
+//   TIM_TimeBaseStructure.TIM_Prescaler = facteur_prescaler - 1;//0 donne 1
+//   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+//   TIM_TimeBaseStructure.TIM_Period = TimerPeriod;
+//   TIM_TimeBaseStructure.TIM_ClockDivision = 0; 
+//   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+//   TIM_TimeBaseInit(TIM15, &TIM_TimeBaseStructure);
+// 	
+// 	/* Channel 1 compare output control OC1 & OC1N  Configuration in PWM mode */
+// 	
+//   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+//   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+//   TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
+//   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCNPolarity_High;
+//   TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;//  TIM_OCNPolarity_High
+//   TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;//TIM_OCIdleState_Set
+//   TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Set;// TIM_OCIdleState_Reset
+//   TIM_OCInitStructure.TIM_Pulse = PWM_MOTEUR1;// a supprimer ou a initialiser
+//   TIM_OC1Init(TIM15, &TIM_OCInitStructure);
 
-  /* TIM15 Main Output Enable */
-  TIM_CtrlPWMOutputs(TIM15, DISABLE);//Desactivé
-	  /* TIM15 counter enable */
-  TIM_Cmd(TIM15, DISABLE);//Desactivé
+// 	TIM_OC1PreloadConfig(TIM15, TIM_OCPreload_Enable);// préchargement pour eviter chargement immediat et pertuber la sortie
 
-	TIM_SetCompare1( TIM15,  PWM_MOTEUR1);// ecriture de CCR1 de 16 bits
-/*******************************************************************************************************************************/
+//   /* TIM15 Main Output Enable */
+//   //TIM_CtrlPWMOutputs(TIM15, DISABLE);//Desactivé
+// 	/* TIM15 counter enable */
+//   TIM_Cmd(TIM15, DISABLE);//Desactivé
 
 
+	//TIM_SetCompare1( TIM15,  PWM_MOTEUR1);// ecriture de CCR1 de 16 bits
 	
+	
+	/************************ TIMER2: interruption boucle courant *****************************/
+	
+	// TIMER 2 est activé :
+	/* CONFIGURATION DU TIMER 2 */
+// 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 , ENABLE);//TIM2 actif
+// 	
+//   TimerPeriod = (SystemCoreClock / (10000 * facteur_prescaler)) - 1; //
 
+// //	TIM_TimeBaseInitTypeDef timerInitStructure; 
+// 	TIM_TimeBaseStructure.TIM_Prescaler = facteur_prescaler -1; // 0 donne 1
+// 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+// 	TIM_TimeBaseStructure.TIM_Period = TimerPeriod;
+// 	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;// ? exemple net
+// 	TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+// 	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+// 	TIM_Cmd(TIM2, ENABLE);// Activé
+
+// 	
+// 	//TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Enable);// préchargement pour eviter chargement immediat et pertuber la sortie
+// 	
+// 	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+// 	
+// 	
+// 	/* Configuration de l'interruption du timer2 */
+// 	//	NVIC_InitTypeDef nvicStructure;
+// 	nvicStructure.NVIC_IRQChannel = TIM2_IRQn;
+// 	nvicStructure.NVIC_IRQChannelPreemptionPriority = 5;
+// 	nvicStructure.NVIC_IRQChannelSubPriority = 5;
+// 	nvicStructure.NVIC_IRQChannelCmd = ENABLE;
+// 	NVIC_Init(&nvicStructure);
+	
 }
-
-
-
 
 /**
   * @brief  Inserts a delay time.
@@ -461,6 +515,7 @@ void Delay(__IO uint32_t nTime)
 
   while(TimingDelay != 0);
 }
+
 /**
   * @brief  Decrements the TimingDelay variable.
   * @param  None
@@ -473,3 +528,5 @@ void TimingDelay_Decrement(void)
     TimingDelay--;
   }
 }
+
+/************************ (C) COPYRIGHT INSA TOULOUSE ************************/
