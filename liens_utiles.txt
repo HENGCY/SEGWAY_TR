@@ -12,3 +12,6 @@ http://www.micromouseonline.com/2016/02/02/systick-configuration-made-easy-on-th
 
 Boucle courant:
 http://www.lesia.insa-toulouse.fr/~acco/acco_wiki/lib/exe/fetch.php?media=hard:4ae_chaine_acq:2009_10:dossiersupport_2009_2010.pdf
+
+Effets inductance moteur
+http://doc.ingeniamc.com/wiki/motion-wiki/motor-inductance-effects-on-servo-drives
