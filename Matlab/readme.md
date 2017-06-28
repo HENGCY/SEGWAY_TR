@@ -10,7 +10,7 @@ Il s'agit la commande par correcteur retour d'état.
 
 Dans notre système, la consigne pour theta (angle entre l'axe vertical du sol et le guidon) est égale à zéro car nous voulons stabiliser le système et garder le Segway en position verticale.
 
-Le système est donc commandé par Beta (angle entre l'utilisateur et le guidon), qui est considéré comme une pertubation de système.
+Le système est donc commandé par Beta (angle entre l'utilisateur et le guidon), qui est considéré comme une pertubation du système.
 L'asservissement du système se fait dans la carte Raspberry Pi et il envoie tous les 50 Hz à la carte STM32 pour la commande en couple.
 
                      | Beta
@@ -34,8 +34,6 @@ L'asservissement du système se fait dans la carte Raspberry Pi et il envoie tou
 
 Dans notre système, la consigne de couple est reçue tous les 50 Hz par le STM32, elle est d'abord convertie en consigne de courant correspondant au couple du retour d'état.
 
-Le système est donc commandé par Beta (angle entre l'utilisateur et le guidon), qui est considéré comme une pertubation de système.
-L'asservissement du système se fait dans la carte Raspberry Pi et elle envoie tous les 50 Hz à la carte STM32 la consigne en couple.
 Le moteur est commandé en tension par PWM pour atteindre le couple souhaité par le système et on utilise un correcteur PI pour la régulation de courant (voir dossier STM32).
 
                              
