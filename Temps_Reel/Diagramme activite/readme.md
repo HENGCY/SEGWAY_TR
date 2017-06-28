@@ -1,4 +1,4 @@
-** Diagrammes d'activité
+## Diagrammes d'activité
 
 Ce dossier contient les diagrammes d'activité qui décrivent le comportement des threads du programme de temps réel. Ce programme est éxécuté sur Raspberry Pi 3.
 
