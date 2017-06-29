@@ -13,14 +13,14 @@
 #include <stdio.h>
 
 typedef struct Angles {
-    void(*free) (struct Angles *This);                     /*!< Appel à la fonction angles_free(). */
-    void(*set) (struct Angles *This, float theta, float vit ,float dir);/*!< Appel à la fonction angles_set().*/
-    float(*get_angle) (struct Angles *This);               /*!< Appel à la fonction angles_get_angle(). */
-    float(*get_vitesse_ang) (struct Angles *This);          /*!< Appel à la fonction angles_get_vitesse_ang().*/
-    float(*get_direction) (struct Angles *This);           /*!< Appel à la fonction angles_get_direction().*/
-    float angle;         /*!< Angle entre le guidon et composant vertical de Segway */
-    float vitesse_ang;   /*!< Vitesse Angulaire entre le guidon et composant vertical de Segway*/
-    float direction;     /*!< Angle entre la direction et mouvement de guidon.*/
+    void(*free) (struct Angles *This);                     /* Appel à la fonction angles_free(). */
+    void(*set) (struct Angles *This, float theta, float vit ,float dir);/* Appel à la fonction angles_set().*/
+    float(*get_angle) (struct Angles *This);               /* Appel à la fonction angles_get_angle(). */
+    float(*get_vitesse_ang) (struct Angles *This);          /* Appel à la fonction angles_get_vitesse_ang().*/
+    float(*get_direction) (struct Angles *This);           /* Appel à la fonction angles_get_direction().*/
+    float angle;         /* Angle entre le guidon et la composante vertical du sol */
+    float vitesse_ang;   /* Vitesse Angulaire entre le guidon et la composante vertical du sol*/
+    float direction;     /* Angle entre la direction et mouvement de guidon.*/
 } Angles;
 
 static void angles_init(Angles*);

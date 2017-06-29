@@ -60,7 +60,7 @@ void MainTask(void *arg) {
 			first_try = 1;
 		}
 
-		rt_printf("WAIT FOR SEMAPHORE!\n"); // Changer , mettre semaphore a la fin
+		rt_printf("WAIT FOR SEMAPHORE!\n"); // Changer, mettre semaphore a la fin
 		log_sem_waiting(&var_sem);
 		rt_sem_p(&var_sem, TM_INFINITE);
 		log_sem_entered(&var_sem);
@@ -130,7 +130,23 @@ void MainTask(void *arg) {
 	
 		rt_task_wait_period(NULL);
 		
-		/* Insérer vérification moteur */
+		rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
+		log_mutex_acquired(&var_mutex_etat_com);
+	
+		com = etat_com;
+	
+		rt_mutex_release(&var_mutex_etat_com);
+		log_mutex_released(&var_mutex_etat_com);
+		
+		if (com){
+		
+			rt_mutex_acquire(&var_mutex_moteur, TM_INFINITE);
+			log_mutex_acquired(&var_mutex_moteur);
+		
+			/* Insérer contrôle de l'état des moteurs */
+		
+			rt_mutex_release(&var_mutex_moteur);
+			log_mutex_released(&var_mutex_moteur);
 		
 	}
 	log_task_ended();
@@ -139,14 +155,55 @@ void MainTask(void *arg) {
 
  void Asservissement(void *arg)
 {
+	float angle, vit_angulaire, c1, c2, k1, k2; 
 	log_task_entered();
 
-	rt_printf("Thread Asservissement: Debut de l'éxecution de periodique à 50 Hz\n");
+	rt_printf("Thread Asservissement: Debut de l'exécution de periodique à 50 Hz\n");
 	rt_task_set_periodic(NULL, TM_NOW, 20000000);
 	
 	while (1) {
+	
 		rt_task_wait_period(NULL);
-		rt_printf("Asservissement !\n");
+		
+		rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
+		log_mutex_acquired(&var_mutex_etat_com);
+	
+		com = etat_com;
+	
+		rt_mutex_release(&var_mutex_etat_com);
+		log_mutex_released(&var_mutex_etat_com);
+		
+		if (com){
+		
+			rt_mutex_acquire(&var_mutex_etat_angle, TM_INFINITE);
+			log_mutex_acquired(&var_mutex_etat_angle);
+			
+			angle = angles_get_angle(etat_angle);
+			vit_angulaire = angles_get_vitesse_ang(etat_angle);			
+		
+			rt_mutex_release(&var_mutex_etat_angle);
+			log_mutex_released(&var_mutex_etat_angle);
+			
+			c1 = (k1 * angle + k2 * vit_angulaire)/0.10435;
+			c2 = c1;
+			
+			rt_mutex_acquire(&var_mutex_consigne_courant, TM_INFINITE);
+			log_mutex_acquired(&var_mutex_consigne_courant);
+			
+			consignes_set(consigne_courant,c1,c2);
+		
+			rt_mutex_release(&var_mutex_consigne_courant);
+			log_mutex_released(&var_mutex_consigne_courant);
+			
+			rt_mutex_acquire(&var_mutex_etat_calcul, TM_INFINITE);
+			log_mutex_acquired(&var_mutex_etat_calcul);
+			
+			etat_calcul = 1;
+		
+			rt_mutex_release(&var_mutex_etat_calcul);
+			log_mutex_released(&var_mutex_etat_calcul);
+			
+		}
 
 	}
 	log_task_ended();
@@ -258,8 +315,8 @@ void MainTask(void *arg) {
 		
 			battery_set_level(bat,battery_get_level(batterie));
 		
-			rt_mutex_release(&var_mutex_arret_def);
-			log_mutex_released(&var_mutex_arret_def);
+			rt_mutex_release(&var_mutex_batterie);
+			log_mutex_released(&var_mutex_batterie);
 			
 			if(bat->battery_get_level < 15){
 				
