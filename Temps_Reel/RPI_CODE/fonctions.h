@@ -1,6 +1,6 @@
 /* 
  * File:  fonctions.h
- * Author: Romain Rivière, Alexandre Benazech, Vincent Pera
+ * Author: INSA Toulouse
  *
  * Created on 20 May 2017
  */
@@ -16,12 +16,12 @@ extern "C" {
 void MainTask(void *arg); 
 void ArretUrgence(void *arg);
 void Moteur10(void *arg);
-void Moteur(void *arg);
+void Surveillance_Moteur(void *arg);
 void Asservissement(void *arg);
-void Presence(void *arg);
+void Presence_User(void *arg);
 void CheckUser(void *arg);
 void CheckBluetooth(void *arg);
-void Batterie(void *arg);
+void Surveillance_Batterie(void *arg);
 void EcouteBluetooth(void *arg);
 void ArretBorne(void *arg);
 void Demarrage(void *arg);

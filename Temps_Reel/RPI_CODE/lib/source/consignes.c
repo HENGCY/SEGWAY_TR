@@ -1,5 +1,5 @@
 /**
- * \file Consgines.c
+ * \file Consignes.c
  * \brief Source de la classe Consignes
  * \author INSA Toulouse
  * \version 1.0

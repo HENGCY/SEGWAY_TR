@@ -1,6 +1,6 @@
 /* 
  * File:   includes.h
- * Author: Romain Rivière, Alexandre Benazech, Vincent Pera
+ * Author: INSA Toulouse
  *
  * Created on 20 May 2017
  */

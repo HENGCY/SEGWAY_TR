@@ -1,6 +1,6 @@
 /* 
  * File:   fonctions.c
- * Author: Romain Rivière, Alexandre Benazech, Vincent Pera
+ * Author: INSA Toulouse
  *
  * Created on 20 May 2017
  */
@@ -119,13 +119,19 @@ void MainTask(void *arg) {
 
 }
 
- void Moteur(void *arg)
+ void Surveillance_Moteur(void *arg)
 {
 	log_task_entered();
-	rt_task_set_periodic(NULL, TM_NOW, SECENTOP);
+
+	rt_printf("Thread surveillance_moteur : Debut de l'éxecution de periodique à 10 Hz\n");
+	rt_task_set_periodic(NULL, TM_NOW, 100000000);
+
 	while (1) {
+	
 		rt_task_wait_period(NULL);
-		rt_printf("Supervision moteur !\n");
+		
+		/* Insérer vérification moteur */
+		
 	}
 	log_task_ended();
 
@@ -135,8 +141,8 @@ void MainTask(void *arg) {
 {
 	log_task_entered();
 
-
-	rt_task_set_periodic(NULL, TM_NOW, SECENTOP / 50);
+	rt_printf("Thread Asservissement: Debut de l'éxecution de periodique à 50 Hz\n");
+	rt_task_set_periodic(NULL, TM_NOW, 20000000);
 	
 	while (1) {
 		rt_task_wait_period(NULL);
@@ -147,16 +153,49 @@ void MainTask(void *arg) {
 
 }
 
- void Presence(void *arg)
+ void Presence_User(void *arg)
 {
+	int com, st;
+	
 	log_task_entered();
 
-
-	rt_task_set_periodic(NULL, TM_NOW, SECENTOP / 10);
+	rt_printf("Thread presence_user : Debut de l'éxecution de periodique à 10 Hz\n");
+	rt_task_set_periodic(NULL, TM_NOW, 100000000);
 	
 	while (1) {
+	
 		rt_task_wait_period(NULL);
-		rt_printf("V�rification de la pr�sence de l'utilisateur!\n");
+		
+		rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
+		log_mutex_acquired(&var_mutex_etat_com);
+	
+		com = etat_com;
+	
+		rt_mutex_release(&var_mutex_etat_com);
+		log_mutex_released(&var_mutex_etat_com);
+		
+		if (com){
+		
+			rt_mutex_acquire(&var_mutex_status, TM_INFINITE);
+			log_mutex_acquired(&var_mutex_status);
+		
+			st = status;
+		
+			rt_mutex_release(&var_mutex_status);
+			log_mutex_released(&var_mutex_status);
+			
+			if(st == NO_USER){
+			
+				rt_mutex_acquire(&var_mutex_arret, TM_INFINITE);
+				log_mutex_acquired(&var_mutex_arret);
+			
+				arret = 1;
+			
+				rt_mutex_release(&var_mutex_arret);
+				log_mutex_released(&var_mutex_arret);
+				
+			}
+		}		
 	}
 
 	log_task_ended();
@@ -190,15 +229,67 @@ void MainTask(void *arg) {
 
 }
 
- void Batterie(void *arg)
+ void Surveillance_Batterie(void *arg)
 {
+	int com;
+	Battery * bat = battery_new();
+	
 	log_task_entered();
 
-
-	rt_task_set_periodic(NULL, TM_NOW, SECENTOP);
+	rt_printf("Thread Surveillance_Batterie : Debut de l'éxecution de periodique à 1 s\n");
+	rt_task_set_periodic(NULL, TM_NOW, 1000000000);
+	
 	while (1) {
+	
 		rt_task_wait_period(NULL);
+		
+		rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
+		log_mutex_acquired(&var_mutex_etat_com);
+	
+		com = etat_com;
+	
+		rt_mutex_release(&var_mutex_etat_com);
+		log_mutex_released(&var_mutex_etat_com);
+		
+		if (com){
+		
+			rt_mutex_acquire(&var_mutex_batterie, TM_INFINITE);
+			log_mutex_acquired(&var_mutex_batterie);
+		
+			battery_set_level(bat,battery_get_level(batterie));
+		
+			rt_mutex_release(&var_mutex_arret_def);
+			log_mutex_released(&var_mutex_arret_def);
+			
+			if(bat->battery_get_level < 15){
+				
+				if(bat->battery_get_level < 5){
+			
+					rt_mutex_acquire(&var_mutex_arret, TM_INFINITE);
+					log_mutex_acquired(&var_mutex_arret);
+				
+					arret = 1;
+				
+					rt_mutex_release(&var_mutex_arret);
+					log_mutex_released(&var_mutex_arret);
+					
+				}
+				else{
+					
+					rt_mutex_acquire(&var_mutex_bat_warning, TM_INFINITE);
+					log_mutex_acquired(&var_mutex_bat_warning);
+				
+					bat_warning = 1;
+				
+					rt_mutex_release(&var_mutex_bat_warning);
+					log_mutex_released(&var_mutex_bat_warning);
+					
+				}
+			}			
+		}
+		
 		rt_printf("Supervision batterie !\n");
+		
 	}
 	
 	log_task_ended();
@@ -214,256 +305,6 @@ void MainTask(void *arg) {
 			//Pour simuler l'�coute en permanance
 			//rt_printf("Essai bluetooth\n"); 
 		//}
-	log_task_ended();
-
-}
-
- void ArretBorne(void *arg)
-{
-	log_task_entered();
-
-	rt_printf("Arret Borne !\n");
-
-	if (rt_task_spawn(&batterie, /* task descriptor */
-		"Batterie", /* name */
-		0           /* 0 = default stack size */,
-		30          /* priority */,
-		0, /* needed to call rt_task_join after */
-		&Batterie,      /* entry point (function pointer) */
-		NULL        /* function argument */) != 0)
-	{
-		rt_printf("rt_task_spawn error\n");
-	}
-
-	rt_printf("Lancement supervision batterie.\n");
-	if (rt_task_spawn(&ecouteBluetooth, /* task descriptor */
-		"Ecoute", /* name */
-		0           /* 0 = default stack size */,
-		30          /* priority */,
-		0, /* needed to call rt_task_join after */
-		&EcouteBluetooth,      /* entry point (function pointer) */
-		NULL        /* function argument */) != 0)
-	{
-		rt_printf("rt_task_spawn error\n");
-	}
-
-	rt_printf("Lancement Bluetooth.\n");
-	rt_task_sleep(TEN_SECONDS);
-	
-	log_wait_for_mutex(&var_mutex_mode);
-	rt_mutex_acquire(&var_mutex_mode, TM_INFINITE);
-	log_mutex_acquired(&var_mutex_mode);
-
-	mode = 2;
-	rt_printf("Set mode 2\n");
-	
-	log_mutex_released(&var_mutex_mode);
-	rt_mutex_release(&var_mutex_mode);
-	
-	log_sem_signaled(&var_sem);
-	rt_sem_v(&var_sem);
-
-	log_task_ended();
-
-
-}
-
- void Demarrage(void *arg)
-{
-	log_task_entered();
-
-
-	rt_printf("Demarrage !\n");
-	if (rt_task_spawn(&batterie, /* task descriptor */
-		"Batterie", /* name */
-		0           /* 0 = default stack size */,
-		30          /* priority */,
-		0, /* needed to call rt_task_join after */
-		&Batterie,      /* entry point (function pointer) */
-		NULL        /* function argument */) != 0)
-	{
-		rt_printf("rt_task_spawn error\n");
-	}
-	rt_printf("Lancement supervision batterie.\n");
-
-	if (rt_task_spawn(&moteur, /* task descriptor */
-		"Moteur", /* name */
-		0           /* 0 = default stack size */,
-		30          /* priority */,
-		0, /* needed to call rt_task_join after */
-		&Moteur,      /* entry point (function pointer) */
-		NULL        /* function argument */) != 0)
-	{
-		rt_printf("rt_task_spawn error\n");
-	}
-
-	rt_printf("Lancement supervision moteur.\n");
-	if (rt_task_spawn(&checkBluetooth, /* task descriptor */
-		"Check Bluetooth", /* name */
-		0           /* 0 = default stack size */,
-		30          /* priority */,
-		0, /* needed to call rt_task_join after */
-		&CheckBluetooth,      /* entry point (function pointer) */
-		NULL        /* function argument */) != 0)
-	{
-		rt_printf("rt_task_spawn error\n");
-	}
-
-	rt_task_sleep(TEN_SECONDS);
-	
-	log_wait_for_mutex(&var_mutex_mode);
-	rt_mutex_acquire(&var_mutex_mode, TM_INFINITE);
-	log_mutex_acquired(&var_mutex_mode);
-	
-	mode = 3;
-	rt_printf("Set mode 3\n");
-	
-	rt_mutex_release(&var_mutex_mode);
-	log_mutex_released(&var_mutex_mode);
-	
-	log_sem_signaled(&var_sem);
-	rt_sem_v(&var_sem);
-
-	log_task_ended();
-}
-
- void Nominal(void *arg)
-{
-	log_task_entered();
-
-
-	rt_printf("Nominal GO!\n");
-	if (rt_task_spawn(&asservissement, /* task descriptor */
-		"Asservissement", /* name */
-		0           /* 0 = default stack size */,
-		60          /* priority */,
-		0, /* needed to call rt_task_join after */
-		&Asservissement,      /* entry point (function pointer) */
-		NULL        /* function argument */) != 0)
-	{
-		rt_printf("rt_task_spawn error\n");
-	}
-	rt_printf("Lancement asservissement.\n");
-
-	if (rt_task_spawn(&batterie, /* task descriptor */
-		"Batterie", /* name */
-		0           /* 0 = default stack size */,
-		30          /* priority */,
-		0, /* needed to call rt_task_join after */
-		&Batterie,      /* entry point (function pointer) */
-		NULL        /* function argument */) != 0)
-	{
-		rt_printf("rt_task_spawn error\n");
-	}
-
-	rt_printf("Lancement supervision batterie.\n");
-
-	if (rt_task_spawn(&moteur, /* task descriptor */
-		"Moteur", /* name */
-		0           /* 0 = default stack size */,
-		30          /* priority */,
-		0, /* needed to call rt_task_join after */
-		&Moteur10,      /* entry point (function pointer) */
-		NULL        /* function argument */) != 0)
-	{
-		rt_printf("rt_task_spawn error\n");
-	}
-
-	rt_printf("Lancement supervision moteur.\n");
-
-	if (rt_task_spawn(&presence, /* task descriptor */
-		"Presence", /* name */
-		0           /* 0 = default stack size */,
-		30          /* priority */,
-		0, /* needed to call rt_task_join after */
-		&Presence,      /* entry point (function pointer) */
-		NULL        /* function argument */) != 0)
-	{
-		rt_printf("rt_task_spawn error\n");
-	}
-
-	rt_printf("Lancement supervision utilisateur.\n");
-
-	if (rt_task_spawn(&rightUser, /* task descriptor */
-		"Checking", /* name */
-		0           /* 0 = default stack size */,
-		30          /* priority */,
-		0, /* needed to call rt_task_join after */
-		&CheckUser,      /* entry point (function pointer) */
-		NULL        /* function argument */) != 0)
-	{
-		rt_printf("rt_task_spawn error\n");
-	}
-	if (rt_task_spawn(&ecouteBluetooth, /* task descriptor */
-		"Ecoute", /* name */
-		0           /* 0 = default stack size */,
-		30          /* priority */,
-		0, /* needed to call rt_task_join after */
-		&EcouteBluetooth,      /* entry point (function pointer) */
-		NULL        /* function argument */) != 0)
-	{
-		rt_printf("rt_task_spawn error\n");
-	}
-
-	rt_printf("Mode nominal lance.\n");
-	rt_task_sleep(TEN_SECONDS);
-	
-	log_wait_for_mutex(&var_mutex_mode);
-	rt_mutex_acquire(&var_mutex_mode, TM_INFINITE);
-	log_mutex_acquired(&var_mutex_mode);
-	
-	mode = 4;
-	rt_printf("Set mode 4\n");
-	
-	rt_mutex_release(&var_mutex_mode);
-	log_mutex_released(&var_mutex_mode);
-	
-	log_sem_signaled(&var_sem);
-	rt_sem_v(&var_sem);
-
-	log_task_ended();
-
-}
-
-
- void ArretHorsBorne(void *arg)
-{
-	log_task_entered();
-
-	rt_printf("Arret Hors Borne !\n");
-
-	if (rt_task_spawn(&ecouteBluetooth, /* task descriptor */
-		"Ecoute", /* name */
-		0           /* 0 = default stack size */,
-		30          /* priority */,
-		0, /* needed to call rt_task_join after */
-		&EcouteBluetooth,      /* entry point (function pointer) */
-		NULL        /* function argument */) != 0)
-	{
-		rt_printf("rt_task_spawn error\n");
-	}
-
-	rt_printf("Lancement Bluetooth.\n");
-
-	rt_task_sleep(TEN_SECONDS);
-
-	rt_printf("Declenchement de la procedure d'arret d'urgence\n");
-	if (rt_task_spawn(&arretUrgence, /* task descriptor */
-		"Urgence", /* name */
-		0           /* 0 = default stack size */,
-		30          /* priority */,
-		0, /* needed to call rt_task_join after */
-		&ArretUrgence,      /* entry point (function pointer) */
-		NULL        /* function argument */) != 0)
-	{
-		rt_printf("rt_task_spawn error\n");
-	}
-	
-	log_sem_signaled(&var_sem);
-	rt_sem_v(&var_sem);
-	
-	rt_printf("FIN DE PROGRAMME\n");
-
 	log_task_ended();
 
 }
@@ -520,133 +361,5 @@ void MainTask(void *arg) {
 		}
 }
 
-
-
-void close_mode(int mode) 
-{
-	if (mode == 1) {
-		
-		log_task_deleted(&arretborne);
-		rt_task_delete(&arretborne);
-		rt_printf("End Mode 1\n");
-		
-		log_task_deleted(&batterie);
-		rt_task_delete(&batterie);
-		rt_printf("Task Batterie deleted\n");
-		
-		log_task_deleted(&ecouteBluetooth);
-		rt_task_delete(&ecouteBluetooth);
-		rt_printf("Task Bluetooth deleted\n");
-	}
-	else if (mode == 2) {
-		log_task_deleted(&demarrage);
-		rt_task_delete(&demarrage);
-		rt_printf("End Mode 2\n");
-
-		log_task_deleted(&batterie);
-		rt_task_delete(&batterie);
-		rt_printf("Task Batterie deleted\n");
-
-		log_task_deleted(&moteur);
-		rt_task_delete(&moteur);
-		rt_printf("Task Moteur deleted\n");
-	}
-	else if (mode == 3) {
-		log_task_deleted(&nominal);
-		rt_task_delete(&nominal);
-		rt_printf("End Mode 3\n");
-
-		log_task_deleted(&batterie);
-		rt_task_delete(&batterie);
-		rt_printf("Task Batterie deleted\n");
-
-		log_task_deleted(&moteur);
-		rt_task_delete(&moteur);
-		rt_printf("Task Moteur deleted\n");
-		
-		log_task_deleted(&asservissement);
-		rt_task_delete(&asservissement);
-		rt_printf("Task Asservissement deleted\n");
-
-		log_task_deleted(&presence);
-		rt_task_delete(&presence);
-		rt_printf("Task Presence deleted\n");
-
-		log_task_deleted(&rightUser);
-		rt_task_delete(&rightUser);
-		rt_printf("Task Verification User deleted\n");
-
-		log_task_deleted(&ecouteBluetooth);
-		rt_task_delete(&ecouteBluetooth);
-		rt_printf("Task Ecoute Bluetooth deleted\n");
-		
-	}
-	else if (mode == 4) {
-		log_task_deleted(&arrethorsborne);
-		rt_task_delete(&arrethorsborne);
-		rt_printf("End Mode 4\n"); 
-
-		log_task_deleted(&ecouteBluetooth);
-		rt_task_delete(&ecouteBluetooth);
-		rt_printf("Task Ecoute Bluetooth deleted\n");
-	}
-}
-
-
-
-void open_mode(int mode) {
-
-	if (mode == 1) {
-		if (rt_task_spawn(&arretborne, /* task descriptor */
-			"Arret Borne", /* name */
-			0           /* 0 = default stack size */,
-			40          /* priority */,
-			0, /* needed to call rt_task_join after */
-			&ArretBorne,      /* entry point (function pointer) */
-			NULL        /* function argument */) != 0)
-		{
-			rt_printf("rt_task_spawn error\n");
-
-		}
-	}
-	else if (mode == 2) {
-		if (rt_task_spawn(&demarrage, /* task descriptor */
-			"Demarrage", /* name */
-			0           /* 0 = default stack size */,
-			90          /* priority */,
-			T_JOINABLE, /* needed to call rt_task_join after */
-			&Demarrage,      /* entry point (function pointer) */
-			NULL        /* function argument */) != 0)
-		{
-			rt_printf("rt_task_spawn error\n");
-
-		}
-	}
-	else if (mode == 3) {
-		if (rt_task_spawn(&nominal, /* task descriptor */
-			"Nominal", /* name */
-			0           /* 0 = default stack size */,
-			90          /* priority */,
-			T_JOINABLE, /* needed to call rt_task_join after */
-			&Nominal,      /* entry point (function pointer) */
-			NULL        /* function argument */) != 0)
-		{
-			rt_printf("rt_task_spawn error\n");
-
-		}
-	}
-	else if (mode == 4) {
-		if (rt_task_spawn(&arrethorsborne, /* task descriptor */
-			"Arret Hors Borne", /* name */
-			0           /* 0 = default stack size */,
-			90          /* priority */,
-			T_JOINABLE, /* needed to call rt_task_join after */
-			&ArretHorsBorne,      /* entry point (function pointer) */
-			NULL        /* function argument */) != 0)
-		{
-			rt_printf("rt_task_spawn error\n");
-
-		}
-	}
 
 }

@@ -37,6 +37,26 @@
 */
 #define DIRECTION_INITIAL                   (0.0)
 
+/*********** etat_com **************/
+
+/*! \def CONNECTE
+    \brief Valeur décrivant la valeur de etat_com lorsque la communication fonctionne
+*/
+#define CONNECTE		                    (1)
+
+/*! \def NON_CONNECTE
+    \brief Valeur décrivant la valeur de etat_com lorsque la communication est rompue
+*/
+#define NON_CONNECTE		                (0)
+
+/*********** status **************/
+
+/*! \def NO_USER
+    \brief Valeur décrivant la valeur de status lorsque la présence de l'utilisateur
+	n'est pas détectée.
+*/
+#define NO_USER								(3)
+
 
 
 

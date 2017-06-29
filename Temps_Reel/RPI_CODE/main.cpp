@@ -1,6 +1,6 @@
 /* 
  * File:   main.c
- * Author: Romain Rivière, Alexandre Benazech, Vincent Pera
+ * Author: INSA Toulouse
  *
  * Created on 20 May 2017
  */
@@ -57,7 +57,6 @@ int main(void)
 			NULL        /* function argument */) != 0)
 		{
 			rt_printf("rt_task_spawn error\n");
-
 		}
 
 	pause();
