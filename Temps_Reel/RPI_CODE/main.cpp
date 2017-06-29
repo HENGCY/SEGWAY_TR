@@ -5,27 +5,27 @@
  * Created on 20 May 2017
  */
 
-
-
-
-
 #include "includes.h"
 #include <iostream>
+
 int main(void)
 {
-
 
 	/* disable memory swap */
 	mlockall(MCL_CURRENT | MCL_FUTURE);	
 
-	
-
 	init_recording();
 
-	rt_mutex_create(&var_mutex_mode, "mode");
-	rt_mutex_create(&var_mutex_arret_def, "arret_def");
-	rt_mutex_create(&var_mutex_var_cond, "mutex_var_cond");
-
+	rt_mutex_create(&var_mutex_etat_com, "etat_com");
+	rt_mutex_create(&var_mutex_arret, "arret");
+	rt_mutex_create(&var_mutex_etat_angle, "etat_angle");
+	rt_mutex_create(&var_mutex_consigne_courant, "consigne_courant");
+	rt_mutex_create(&var_mutex_etat_calcul, "etat_calcul");
+	rt_mutex_create(&var_mutex_status, "status");
+	rt_mutex_create(&var_mutex_moteur, "moteur");
+	rt_mutex_create(&var_mutex_batterie, "batterie");
+	rt_mutex_create(&var_mutex_vitesse, "vitesse");
+	rt_mutex_create(&var_mutex_bat_warning, "bat_warning");
 
 	rt_printf("Fin init mutex\n");
 	rt_sem_create(&var_sem, "var_sem",0,TM_INFINITE);

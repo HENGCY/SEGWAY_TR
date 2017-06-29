@@ -1,40 +1,40 @@
 /* 
  * File:   global.c
- * Author: Romain Rivière, Alexandre Benazech, Vincent Pera
+ * Author: INSA Toulouse
  *
  * Created on 20 May 2017
  */
 
-
 #include "global.h"
 
+/* Déclaration des variables partagées */
 
-
- int mode = 0; // 0 = arret total      1 = arret borne      2 = demarrage       3 = en fonctionnement        4 = arret HORS borne
- int arret_def = 0;
+ int arret = 0;
+ int etat_calcul = 0;
+ int status = 0;
+ int etat_com = 0;
 
  RT_SEM var_sem;
 
- RT_MUTEX var_mutex_mode; 
- RT_MUTEX var_mutex_arret_def ; 
- RT_MUTEX var_mutex_var_cond;
+/* Déclaration des mutex */
 
+ RT_MUTEX var_mutex_etat_com; 
+ RT_MUTEX var_mutex_arret; 
+ RT_MUTEX var_mutex_etat_angle;
+ RT_MUTEX var_mutex_consigne_courant;
+ RT_MUTEX var_mutex_etat_calcul;
+ RT_MUTEX var_mutex_status;
+ RT_MUTEX var_mutex_moteur;
+ RT_MUTEX var_mutex_batterie;
+ RT_MUTEX var_mutex_vitesse;
+ RT_MUTEX var_mutex_bat_warning;
 
 /* @descripteurs des tâches */
 
-RT_TASK batterie; 
-RT_TASK ecouteBluetooth; 
-RT_TASK checkBluetooth; 
-RT_TASK moteur; 
-RT_TASK asservissement; 
-RT_TASK presence; 
-RT_TASK rightUser; 
-RT_TASK arretUrgence;
-RT_TASK arretborne; 
-RT_TASK arrethorsborne; 
-RT_TASK nominal; 
-RT_TASK demarrage;
-RT_TASK mainTask;
-RT_TASK serial;
-
+RT_TASK Communication; 
+RT_TASK Asservissement; 
+RT_TASK Affichage; 
+RT_TASK Batterie; 
+RT_TASK Moteur; 
+RT_TASK PresenceUser; 
 
