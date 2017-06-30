@@ -30,7 +30,6 @@ extern RT_MUTEX var_mutex_etat_calcul;
 extern RT_MUTEX var_mutex_status;
 extern RT_MUTEX var_mutex_moteur;
 extern RT_MUTEX var_mutex_batterie;
-extern RT_MUTEX var_mutex_vitesse;
 extern RT_MUTEX var_mutex_bat_warning;
 
 /* @descripteurs des tâches */

@@ -13,6 +13,11 @@
  int etat_calcul = 0;
  int status = 0;
  int etat_com = 0;
+ int bat_warning = 0;
+ Angles etat_angle;
+ Battery batterie;
+ Consignes consigne_courant;
+ 
 
  RT_SEM var_sem;
 
@@ -26,7 +31,6 @@
  RT_MUTEX var_mutex_status;
  RT_MUTEX var_mutex_moteur;
  RT_MUTEX var_mutex_batterie;
- RT_MUTEX var_mutex_vitesse;
  RT_MUTEX var_mutex_bat_warning;
 
 /* @descripteurs des tâches */

@@ -59,6 +59,26 @@ int init_serial(){
 	@returns 0 if there was an issue while reading the message else 1
 */ 
 
+int bytes_to_array_of_message(unsigned char * mesg, message_serial * m[5]){
+	int ret =0;
+	int i=0,y;
+	int mesg_size = sizeof(*mesg)/sizeof(unsigned char);
+
+	for (y=0;y<=mesg_size;y=y+7){
+		if(mesg[y] == '<' && mesg[y+6] == '\n' ){
+			m[i]->label = mesg[y+1];
+			m[i]->value = bytes_to_float(&mesg[y+2]);
+			ret=1;
+		}else{
+			m[i]->label = 'e';
+			ret=0;
+		}
+		i++;
+	}
+	if (i>4){ret =0;}
+	return ret;
+}
+
 int bytes_to_message(unsigned char * mesg, message_serial * m){
 	int ret =0;
 	if(mesg[0] == '<' && mesg[6] == '\n' ){
@@ -167,8 +187,8 @@ message_serial read_from_serial(){
 		}
 	}
 	
-	message_serial m;
-	bytes_to_message(message_buffer, &m);
+	message_serial * m[5]
+	bytes_to_array_of_message(message_buffer, &m);
 
 	return m;
 
