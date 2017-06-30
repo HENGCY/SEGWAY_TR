@@ -7,7 +7,7 @@
 
 
 #include "fonctions.h"
-
+/*
 void MainTask(void *arg) {
 	//add_task_to_monitoring(&moteur);
 	int mode_save;
@@ -77,15 +77,15 @@ void MainTask(void *arg) {
 	}
 
 
-	/* wait for task function termination */
+	/* wait for task function termination 
 	log_task_ended();
 	stop_recording();
 	rt_printf("END OF PROGRAM\n");
 	
-
+*/
 	
 }
-
+/*
  void ArretUrgence(void *arg) {
 	
 	log_task_entered();
@@ -118,7 +118,7 @@ void MainTask(void *arg) {
 	log_task_ended();
 
 }
-
+*/
  void Surveillance_Moteur(void *arg)
 {
 	log_task_entered();
@@ -258,7 +258,7 @@ void MainTask(void *arg) {
 	log_task_ended();
 
 }
-
+/*
  void CheckUser(void *arg)
 {
 	log_task_entered();
@@ -285,7 +285,7 @@ void MainTask(void *arg) {
 	log_task_ended();
 
 }
-
+*/
  void Surveillance_Batterie(void *arg)
 {
 	int com;
@@ -293,7 +293,7 @@ void MainTask(void *arg) {
 	
 	log_task_entered();
 
-	rt_printf("Thread Surveillance_Batterie : Debut de l'éxecution de periodique à 1 s\n");
+	rt_printf("Thread Surveillance_Batterie : Debut de l'éxecution de periodique à 1 Hz\n");
 	rt_task_set_periodic(NULL, TM_NOW, 1000000000);
 	
 	while (1) {
@@ -343,16 +343,13 @@ void MainTask(void *arg) {
 					
 				}
 			}			
-		}
-		
-		rt_printf("Supervision batterie !\n");
-		
+		}		
 	}
 	
 	log_task_ended();
 
 }
-
+/*
  void EcouteBluetooth(void *arg)
 {
 	log_task_entered();
@@ -364,7 +361,7 @@ void MainTask(void *arg) {
 		//}
 	log_task_ended();
 
-}
+}*/
 
 
  void Serial(void *arg) 
