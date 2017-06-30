@@ -95,16 +95,15 @@ int send_float_to_serial(float fl_value, char tag){
 	p_tx_buffer[5] = msg[3];
 	p_tx_buffer[6] = '\n';
 
-			if (uart0_filestream != -1)
-			{
-					int count = write(uart0_filestream, &p_tx_buffer[0], MESSAGE_SERIAL_LENGTH);              //Filestream, bytes to write, number of bytes to write
-					if (count < 0)
-					{
-							rt_printf("UART TX error\n");
-					}else{
-						ret_val = 1;
-					}	
+		if (uart0_filestream != -1){
+			int count = write(uart0_filestream, &p_tx_buffer[0], MESSAGE_SERIAL_LENGTH);              //Filestream, bytes to write, number of bytes to write
+			if (count < 0){
+				rt_printf("UART TX error\n");
 			}
+			else{
+				ret_val = 1;
+			}	
+		}
 	return ret_val;
 }
 
@@ -138,24 +137,9 @@ message_serial read_from_serial(){
 	while(message_length<MESSAGE_SERIAL_LENGTH)
 	{
 		// Read up to 255 characters from the port if they are there
-			unsigned char rx_buffer[256];
-			/*
-			if(message_length >0){
-				
-				SRTIME time_from_first_byte = rt_timer_ticks2ns(rt_timer_read() - begin_time);
-				
-				
-				if(time_from_first_byte > MESSAGE_TIMEOUT_NS){
-					message_length = 0;
-					rt_printf("Dropped a message (timeout) %d\n", time_from_first_byte);
-				}
-				
-			}
-			*/
-			
-			int rx_length = read(uart0_filestream, (void*)rx_buffer, MESSAGE_SERIAL_LENGTH - message_length);		//Filestream, buffer to store in, number of bytes to read (max)
-			
-		
+		unsigned char rx_buffer[256];
+		int rx_length = read(uart0_filestream, (void*)rx_buffer, MESSAGE_SERIAL_LENGTH - message_length);		//Filestream, buffer to store in, number of bytes to read (max)
+	
 		if (rx_length < 0)
 		{
 			//rt_printf("Error when checking for rx bytes\n");
@@ -173,13 +157,11 @@ message_serial read_from_serial(){
 				rt_printf("begin time = %d \n", begin_time);
 			}
 
-
 			int i;
 			for (i = 0; i<rx_length; ++i) {
 				message_buffer[message_length + i] = rx_buffer[i];
 			}
 
-					
 			message_length = message_length + rx_length;
 
 		}

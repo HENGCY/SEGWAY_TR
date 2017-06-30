@@ -363,8 +363,71 @@ void MainTask(void *arg) {
 
 }*/
 
+ void Communication(void *arg) 
+{
+		rt_printf("Started Serial\n");
+		int uart0_filestream = -1;
 
- void Serial(void *arg) 
+		uart0_filestream = init_serial();
+
+		if(uart0_filestream == -1){
+			rt_printf("Can't Use the UART\n");
+			rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
+			log_mutex_acquired(&var_mutex_etat_com);
+
+			etat_com = 0;
+
+			rt_mutex_release(&var_mutex_etat_com);
+			log_mutex_released(&var_mutex_etat_com);			
+		}
+		else{
+			
+			//----- TX BYTES -----
+			unsigned char tx_buffer[20];
+			unsigned char *p_tx_buffer;
+
+	
+			unsigned char message_buffer[256];
+			int message_length = 0;
+			float angular_position = 0;
+			float angular_speed = 0;
+	
+			while (1) {
+			
+				rt_task_wait_period(NULL);
+				
+				rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
+				log_mutex_acquired(&var_mutex_etat_com);
+
+				com = etat_com;
+
+				rt_mutex_release(&var_mutex_etat_com);
+				log_mutex_released(&var_mutex_etat_com);			
+		
+				if (com){
+			
+					message_serial m = read_from_serial();
+
+					if(m.label =='p'){
+						angular_position = m.value;
+					}
+					else if(m.label == 's'){
+						angular_speed = m.value;
+						message_length = 0;						
+						send_float_to_serial(torque, 't');
+					}
+					else {
+						rt_printf("Unknown message type : tag '%c'\n", m.label );
+					}	
+				}
+			}
+
+			//----- CLOSE THE UART -----
+			close(uart0_filestream);
+		}
+}
+
+ /*void Serial(void *arg) 
 {
 		rt_printf("Started Serial\n");
 		int uart0_filestream = -1;
@@ -413,7 +476,7 @@ void MainTask(void *arg) {
 			//----- CLOSE THE UART -----
 			close(uart0_filestream);
 		}
-}
+}*/
 
 
 }
