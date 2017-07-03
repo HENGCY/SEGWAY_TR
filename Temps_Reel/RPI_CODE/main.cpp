@@ -8,6 +8,10 @@
 #include "includes.h"
 #include <iostream>
 
+void initStruct(void);
+void startTasks(void);
+void deleteTasks(void);
+
 int main(void){
 
 	/* disable memory swap */

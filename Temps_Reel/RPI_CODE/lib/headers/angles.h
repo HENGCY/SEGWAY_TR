@@ -31,7 +31,7 @@ extern "C" {
         float angle;         /*!< Angle entre le guidon et composant vertical de Segway */
         float vitesse_ang;   /*!< Vitesse Angulaire entre le guidon et composant vertical de Segway*/
         float direction;     /*!< Angle entre la direction et mouvement de guidon.*/
-		float vitesse_lin;  /*!< Vitesse linéaire du Segway
+		float vitesse_lin;   /*!< Vitesse linéaire du Segway */
     } Angles;
 
     /**

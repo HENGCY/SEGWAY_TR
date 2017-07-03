@@ -20,7 +20,8 @@ typedef struct Angles {
     float(*get_direction) (struct Angles *This);           /* Appel à la fonction angles_get_direction().*/
     float angle;         /* Angle entre le guidon et la composante vertical du sol */
     float vitesse_ang;   /* Vitesse Angulaire entre le guidon et la composante vertical du sol*/
-    float direction;     /* Angle entre la direction et mouvement de guidon.*/
+    float vitesse_lin;	 /* Vitesse linéaire du Segway */
+	float direction;     /* Angle entre la direction et mouvement de guidon.*/
 } Angles;
 
 static void angles_init(Angles*);

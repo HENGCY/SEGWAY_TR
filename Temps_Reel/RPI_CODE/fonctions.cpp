@@ -301,6 +301,8 @@ void Surveillance_Moteur(void *arg)
 						rt_mutex_release(&var_mutex_batterie);
 						log_mutex_released(&var_mutex_batterie);	
 					}
+
+
 					else if(m[i].label == 'v'){
 						rt_mutex_acquire(&var_mutex_etat_angle, TM_INFINITE);
 						log_mutex_acquired(&var_mutex_etat_angle);
@@ -354,6 +356,9 @@ void Surveillance_Moteur(void *arg)
 
 void Affichage(void *arg){
 
+	float angle, vit_ang, vit_lin, bat, cons_cour1, cons_cour2;
+	int bat_warning, etat_com;
+
 	rt_task_wait_period(NULL);
 			
 	rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
@@ -365,6 +370,39 @@ void Affichage(void *arg){
 	log_mutex_released(&var_mutex_etat_com);			
 
 	if (com){
+
+		rt_mutex_acquire(&var_mutex_etat_angle, TM_INFINITE);
+		log_mutex_acquired(&var_mutex_etat_com);
+
+		com = etat_com;
+
+		rt_mutex_release(&var_mutex_etat_com);
+		log_mutex_released(&var_mutex_etat_com);
+
+		rt_mutex_acquire(&var_mutex_consigne_courant, TM_INFINITE);
+		log_mutex_acquired(&var_mutex_consigne_courant);
+
+		cons_cour1 = consigne_courant->get_moteur1;
+
+		rt_mutex_release(&var_mutex_consigne_courant);
+		log_mutex_released(&var_mutex_consigne_courant);
+
+		rt_mutex_acquire(&var_mutex_consigne_courant, TM_INFINITE);
+		log_mutex_acquired(&var_mutex_consigne_courant);
+
+		cons_cour2 = consigne_courant->get_moteur2;
+
+		rt_mutex_release(&var_mutex_consigne_courant);
+		log_mutex_released(&var_mutex_consigne_courant);
+
+		rt_mutex_acquire(&var_mutex_etat_angle, TM_INFINITE);
+		log_mutex_acquired(&var_mutex_etat_com);
+
+		com = etat_com;
+
+		rt_mutex_release(&var_mutex_etat_com);
+		log_mutex_released(&var_mutex_etat_com);
+
 
 		// open program Python
 
