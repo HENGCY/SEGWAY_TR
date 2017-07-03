@@ -7,119 +7,8 @@
 
 
 #include "fonctions.h"
-/*
-void MainTask(void *arg) {
-	//add_task_to_monitoring(&moteur);
-	int mode_save;
 
-	log_task_entered();
-	
-	log_wait_for_mutex(&var_mutex_mode);
-	rt_mutex_acquire(&var_mutex_mode,TM_INFINITE);
-	log_mutex_acquired(&var_mutex_mode);
-	
-	mode = 1;
-	mode_save = mode;
-	rt_printf("Mode = 1\n");
-	
-	rt_mutex_release(&var_mutex_mode);
-	log_mutex_released(&var_mutex_mode);
-	
-	open_mode(mode_save);
-
-	int first_try = 0;
-	
-	log_wait_for_mutex(&var_mutex_arret_def);
-	rt_mutex_acquire(&var_mutex_arret_def, TM_INFINITE);
-	log_mutex_acquired(&var_mutex_arret_def);
-	
-	int arret_local = arret_def;
-	rt_printf("Get arret def\n");
-	
-	rt_mutex_release(&var_mutex_arret_def);
-	log_mutex_released(&var_mutex_arret_def);
-
-	while (arret_local == 0) {
-
-		if (first_try) {
-			close_mode(mode_save);
-			
-			log_wait_for_mutex(&var_mutex_mode);
-			rt_mutex_acquire(&var_mutex_mode, TM_INFINITE);
-			log_mutex_acquired(&var_mutex_mode);
-			
-			mode_save = mode;
-			rt_printf("Get save\n");
-			
-			rt_mutex_release(&var_mutex_mode);
-			log_mutex_released(&var_mutex_mode);
-			
-			open_mode(mode_save);
-		}
-		else {
-			first_try = 1;
-		}
-
-		rt_printf("WAIT FOR SEMAPHORE!\n"); // Changer, mettre semaphore a la fin
-		log_sem_waiting(&var_sem);
-		rt_sem_p(&var_sem, TM_INFINITE);
-		log_sem_entered(&var_sem);
-
-		log_wait_for_mutex(&var_mutex_arret_def);
-		rt_mutex_acquire(&var_mutex_arret_def, TM_INFINITE);
-		log_mutex_acquired(&var_mutex_arret_def);
-		
-		arret_local = arret_def;
-		rt_printf("Get arret def\n");
-		
-		rt_mutex_release(&var_mutex_arret_def);
-		log_mutex_released(&var_mutex_arret_def);
-	}
-
-
-	/* wait for task function termination 
-	log_task_ended();
-	stop_recording();
-	rt_printf("END OF PROGRAM\n");
-	
-*/
-	
-}
-/*
- void ArretUrgence(void *arg) {
-	
-	log_task_entered();
-	
-	rt_printf("Entree dans la procedure d'arret d'urgence\n");
-	
-	log_wait_for_mutex(&var_mutex_arret_def);
-	rt_mutex_acquire(&var_mutex_arret_def, TM_INFINITE);
-	log_mutex_acquired(&var_mutex_arret_def);
-	
-	arret_def = 1;
-	rt_printf("Set arret def\n");
-	
-	rt_mutex_release(&var_mutex_arret_def);
-	log_mutex_released(&var_mutex_arret_def);
-
-	log_task_ended();
-}
-
- void Moteur10(void *arg)
-{
-	log_task_entered();
-
-	rt_task_set_periodic(NULL, TM_NOW, SECENTOP / 10);
-	while (1) {
-		rt_task_wait_period(NULL);
-		rt_printf("Supervision moteur !\n");
-	}
-
-	log_task_ended();
-
-}
-*/
- void Surveillance_Moteur(void *arg)
+void Surveillance_Moteur(void *arg)
 {
 	log_task_entered();
 
@@ -258,34 +147,7 @@ void MainTask(void *arg) {
 	log_task_ended();
 
 }
-/*
- void CheckUser(void *arg)
-{
-	log_task_entered();
 
-
-	rt_task_set_periodic(NULL, TM_NOW, SECENTOP);
-	while (1) {
-		rt_task_wait_period(NULL);
-		rt_printf("Check User!\n");
-	}
-
-	log_task_ended();
-
-}
-
- void CheckBluetooth(void *arg)
-{
-	log_task_entered();
-
-	rt_printf("V�rifie que le Bluetooth de l'utilisateur est a proximite.\n");
-	//while (1) {
-	//Pour simuler l'�coute en permanance
-	//}
-	log_task_ended();
-
-}
-*/
  void Surveillance_Batterie(void *arg)
 {
 	int com;
@@ -349,210 +211,163 @@ void MainTask(void *arg) {
 	log_task_ended();
 
 }
-/*
- void EcouteBluetooth(void *arg)
-{
-	log_task_entered();
 
-	rt_printf("En ecoute du port Bluetooth\n");
-		//while (1) {
-			//Pour simuler l'�coute en permanance
-			//rt_printf("Essai bluetooth\n"); 
-		//}
-	log_task_ended();
-
-}*/
 
  void Communication(void *arg) 
 {
-		rt_printf("Started Serial\n");
-		int uart0_filestream = -1;
+	rt_printf("Started Serial\n");
+	int uart0_filestream = -1;
 
-		uart0_filestream = init_serial();
+	uart0_filestream = init_serial();
 
-		if(uart0_filestream == -1){
+	if(uart0_filestream == -1){
+
+		rt_printf("Can't Use the UART\n");
+		rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
+		log_mutex_acquired(&var_mutex_etat_com);
+
+		etat_com = 0;
+
+		rt_mutex_release(&var_mutex_etat_com);
+		log_mutex_released(&var_mutex_etat_com);			
+	}
+	else{
 		
-			rt_printf("Can't Use the UART\n");
+		//----- TX BYTES -----
+		unsigned char tx_buffer[20];
+		unsigned char *p_tx_buffer;
+
+
+		unsigned char message_buffer[256];
+		int message_length = 0;
+		float angular_position = 0;
+		float angular_speed = 0;
+		int arr, calc;
+
+		while (1) {
+		
+			rt_task_wait_period(NULL);
+			
 			rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
 			log_mutex_acquired(&var_mutex_etat_com);
 
-			etat_com = 0;
+			com = etat_com;
 
 			rt_mutex_release(&var_mutex_etat_com);
 			log_mutex_released(&var_mutex_etat_com);			
-		}
-		else{
+
+			if (com){
 			
-			//----- TX BYTES -----
-			unsigned char tx_buffer[20];
-			unsigned char *p_tx_buffer;
+				rt_mutex_acquire(&var_mutex_arret, TM_INFINITE);
+				log_mutex_acquired(&var_mutex_arret);
 
-	
-			unsigned char message_buffer[256];
-			int message_length = 0;
-			float angular_position = 0;
-			float angular_speed = 0;
-			int arr, calc;
-	
-			while (1) {
-			
-				rt_task_wait_period(NULL);
+				arr = arret;
+
+				rt_mutex_release(&var_mutex_arret);
+				log_mutex_released(&var_mutex_arret);
 				
-				rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
-				log_mutex_acquired(&var_mutex_etat_com);
-
-				com = etat_com;
-
-				rt_mutex_release(&var_mutex_etat_com);
-				log_mutex_released(&var_mutex_etat_com);			
-		
-				if (com){
+				if (arr = 1){
+					send_float_to_serial(STOP, 't');
+				}
 				
-					rt_mutex_acquire(&var_mutex_arret, TM_INFINITE);
-					log_mutex_acquired(&var_mutex_arret);
+				message_serial m[5] = read_from_serial();
 
-					arr = arret;
+				for(i=0;i<5;i++){
+				
+					if(m[i].label =='p'){
+						rt_mutex_acquire(&var_mutex_etat_angle, TM_INFINITE);
+						log_mutex_acquired(&var_mutex_etat_angle);
 
-					rt_mutex_release(&var_mutex_arret);
-					log_mutex_released(&var_mutex_arret);
-					
-					if (arr = 1){
-						send_float_to_serial(STOP, 't');
+						etat_angle.angle = m.value;
+
+						rt_mutex_release(&var_mutex_etat_angle);
+						log_mutex_released(&var_mutex_etat_angle);	
 					}
-					
-					message_serial m[5] = read_from_serial();
+					else if(m[i].label == 's'){
+						rt_mutex_acquire(&var_mutex_etat_angle, TM_INFINITE);
+						log_mutex_acquired(&var_mutex_etat_angle);
 
-					for(i=0;i<5;i++){
-					
-						if(m[i].label =='p'){
-							rt_mutex_acquire(&var_mutex_etat_angle, TM_INFINITE);
-							log_mutex_acquired(&var_mutex_etat_angle);
+						etat_angle.vitesse_ang = m.value;
 
-							etat_angle.angle = m.value;
+						rt_mutex_release(&var_mutex_etat_angle);
+						log_mutex_released(&var_mutex_etat_angle);					
+					}
+					else if(m[i].label == 'b'){
+						rt_mutex_acquire(&var_mutex_batterie, TM_INFINITE);
+						log_mutex_acquired(&var_mutex_batterie);
 
-							rt_mutex_release(&var_mutex_etat_angle);
-							log_mutex_released(&var_mutex_etat_angle);	
-						}
-						else if(m[i].label == 's'){
-							rt_mutex_acquire(&var_mutex_etat_angle, TM_INFINITE);
-							log_mutex_acquired(&var_mutex_etat_angle);
+						batterie.level = m.value;
 
-							etat_angle.vitesse_ang = m.value;
+						rt_mutex_release(&var_mutex_batterie);
+						log_mutex_released(&var_mutex_batterie);	
+					}
+					else if(m[i].label == 'v'){
+						rt_mutex_acquire(&var_mutex_etat_angle, TM_INFINITE);
+						log_mutex_acquired(&var_mutex_etat_angle);
 
-							rt_mutex_release(&var_mutex_etat_angle);
-							log_mutex_released(&var_mutex_etat_angle);					
-						}
-						else if(m[i].label == 'b'){
-							rt_mutex_acquire(&var_mutex_batterie, TM_INFINITE);
-							log_mutex_acquired(&var_mutex_batterie);
+						etat_angle.vitesse_lin = m.value;
 
-							batterie.level = m.value;
+						rt_mutex_release(&var_mutex_etat_angle);
+						log_mutex_released(&var_mutex_etat_angle);	
+					}	
+					else if(m[i].label == 't'){
+						rt_mutex_acquire(&var_mutex_status, TM_INFINITE);
+						log_mutex_acquired(&var_mutex_status);
 
-							rt_mutex_release(&var_mutex_batterie);
-							log_mutex_released(&var_mutex_batterie);	
-						}
-						else if(m[i].label == 'v'){
-							rt_mutex_acquire(&var_mutex_etat_angle, TM_INFINITE);
-							log_mutex_acquired(&var_mutex_etat_angle);
+						status = m.value;
 
-							etat_angle.vitesse_lin = m.value;
+						rt_mutex_release(&var_mutex_status);
+						log_mutex_released(&var_mutex_status);	
+					}	
+					else {
+						rt_printf("Unknown message type : tag '%c'\n", m.label );
+					}
+				}	// end for message
+			} // end if com
+			
+			rt_mutex_acquire(&var_mutex_etat_calcul, TM_INFINITE);
+			log_mutex_acquired(&var_mutex_etat_calcul);
 
-							rt_mutex_release(&var_mutex_etat_angle);
-							log_mutex_released(&var_mutex_etat_angle);	
-						}	
-						else if(m[i].label == 't'){
-							rt_mutex_acquire(&var_mutex_status, TM_INFINITE);
-							log_mutex_acquired(&var_mutex_status);
+			calc = etat_calcul;
+			etat_calcul = 0;
 
-							status = m.value;
+			rt_mutex_release(&var_mutex_etat_calcul);
+			log_mutex_released(&var_mutex_etat_calcul);
+			
+			if (etat_calcul){
+			rt_mutex_acquire(&var_mutex_consigne_courant, TM_INFINITE);
+			log_mutex_acquired(&var_mutex_consigne_courant);
 
-							rt_mutex_release(&var_mutex_status);
-							log_mutex_released(&var_mutex_status);	
-						}	
-						else {
-							rt_printf("Unknown message type : tag '%c'\n", m.label );
-						}
-					}	// end for message
-				} // end if com
-				
-				rt_mutex_acquire(&var_mutex_etat_calcul, TM_INFINITE);
-				log_mutex_acquired(&var_mutex_etat_calcul);
+			cons = consigne_courant;
 
-				calc = etat_calcul;
-				etat_calcul = 0;
+			rt_mutex_release(&var_mutex_consigne_courant);
+			log_mutex_released(&var_mutex_consigne_courant);
+			
+			send_float_to_serial(cons, 'c');			
+			
+		} // end while(1)
 
-				rt_mutex_release(&var_mutex_etat_calcul);
-				log_mutex_released(&var_mutex_etat_calcul);
-				
-				if (etat_calcul){
-				rt_mutex_acquire(&var_mutex_consigne_courant, TM_INFINITE);
-				log_mutex_acquired(&var_mutex_consigne_courant);
-
-				cons = consigne_courant;
-
-				rt_mutex_release(&var_mutex_consigne_courant);
-				log_mutex_released(&var_mutex_consigne_courant);
-				
-				send_float_to_serial(cons, 'c');			
-				
-			} // end while(1)
-			//send_float_to_serial(torque, 'c');
-
-			//----- CLOSE THE UART -----
-			close(uart0_filestream);
-		}
+		//----- CLOSE THE UART -----
+		close(uart0_filestream);
+	}
 }
 
- /*void Serial(void *arg) 
-{
-		rt_printf("Started Serial\n");
-		int uart0_filestream = -1;
+void Affichage(void *arg){
 
-		uart0_filestream = init_serial();
-
-		if(uart0_filestream == -1){
-			rt_printf("Can't Use the UART\n");	
-		}else{
-
+	rt_task_wait_period(NULL);
 			
-			//----- TX BYTES -----
-			unsigned char tx_buffer[20];
-			unsigned char *p_tx_buffer;
+	rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
+	log_mutex_acquired(&var_mutex_etat_com);
 
-	
-			unsigned char message_buffer[256];
-			int message_length = 0;
-			float angular_position = 0;
-			float angular_speed = 0;
+	com = etat_com;
 
-	
-			while (1) {
-				message_serial m = read_from_serial();
-				if(m.label =='p'){
-					angular_position = m.value;
-				}
-				else if(m.label == 's'){
-					angular_speed = m.value;
+	rt_mutex_release(&var_mutex_etat_com);
+	log_mutex_released(&var_mutex_etat_com);			
 
-					float torque = -1*(angular_position *(-25.6343f) + angular_speed*(-6.4466f)) ;
-					message_length = 0;
-					
-					send_float_to_serial(torque, 't');
+	if (com){
 
-					rt_printf("Angular position :  %f\n", angular_position);
-					rt_printf("Angular speed : %f\n", angular_speed);
-					rt_printf("torque = %f\n", torque);
-				}
-				else {
-					rt_printf("Unknown message type : tag '%c'\n", m.label );
-				}	
-			}
-			
+		// open program Python
 
-			//----- CLOSE THE UART -----
-			close(uart0_filestream);
-		}
-}*/
-
+}
 
 }

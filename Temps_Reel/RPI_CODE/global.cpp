@@ -42,3 +42,11 @@ RT_TASK Batterie;
 RT_TASK Moteur; 
 RT_TASK PresenceUser; 
 
+/* Priorités des threads à définir */
+
+int PRIORITY_TH_COMMUNICATION = 60;
+int PRIORITY_TH_ASSERVISSEMENT = 80;
+int PRIORITY_TH_AFFICHAGE = 70;
+int PRIORITY_TH_BATTERIE = 70;
+int PRIORITY_TH_MOTEUR = 70;
+int PRIORITY_TH_PRESENCEUSER = 70;
