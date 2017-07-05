@@ -1,0 +1,4 @@
+le rapport des profs nous donne deltaV 1.08V/° d'écart entre les roues
+
+On a Ubat = V + R*I = (V+deltaV)+R*(I+deltaI)
+En donnant n'importe quelle valeur à I on obtient deltaI = -2,16 A/°
