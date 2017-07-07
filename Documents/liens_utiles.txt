@@ -15,3 +15,6 @@ http://www.lesia.insa-toulouse.fr/~acco/acco_wiki/lib/exe/fetch.php?media=hard:4
 
 Effets inductance moteur
 http://doc.ingeniamc.com/wiki/motion-wiki/motor-inductance-effects-on-servo-drives
+
+Interface graphique librairies affichage avance
+https://packages.debian.org/fr/jessie/libs/libgtkdatabox-0.9.2-0-glade
