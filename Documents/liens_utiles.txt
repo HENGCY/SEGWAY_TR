@@ -28,3 +28,5 @@ http://zetcode.com/gui/gtk2/gtkevents/
 https://stackoverflow.com/questions/30607429/gtk3-and-multithreading-replacing-deprecated-functions
 
 https://stackoverflow.com/questions/42356126/gtk-glade-event-handler-that-recursively-fires-after-a-set-period-of-time-c
+
+-x option en ssh pour afficher toutes les fenetres qui s'affichent aussi sur la cible
