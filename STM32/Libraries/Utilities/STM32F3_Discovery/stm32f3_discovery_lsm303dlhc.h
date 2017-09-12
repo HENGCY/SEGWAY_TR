@@ -102,7 +102,7 @@ typedef struct
    LSM303DLHC_TIMEOUT_UserCallback() function is called whenever a timeout condition 
    occure during communication (waiting transmit data register empty flag(TXE)
    or waiting receive data register is not empty flag (RXNE)). */   
-#define USE_DEFAULT_TIMEOUT_CALLBACK 
+ #define USE_DEFAULT_TIMEOUT_CALLBACK 
 
 /* Maximum Timeout values for flags waiting loops. These timeouts are not based
    on accurate values, they just guarantee that the application will not remain
@@ -546,7 +546,6 @@ uint16_t LSM303DLHC_Read(uint8_t DeviceAddr, uint8_t RegAddr,uint8_t* pBuffer, u
    Typically the user implementation of this callback should reset MEMS peripheral
    and re-initialize communication or in worst case reset all the application. */
 uint32_t LSM303DLHC_TIMEOUT_UserCallback(void);
-
 
 #ifdef __cplusplus
 }
