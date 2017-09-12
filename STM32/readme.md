@@ -6,8 +6,4 @@ Les codes contiennent les fonctions d'initialisation de peripheriques (Timer, PW
 Les codes sont dans le dossier Projet, et le dossier Documents contient des documents techniques de la carte electronique et les dessins de routage. Les datasheet de microcotrolleurs, accelerometre et gyroscope sont aussi dedans.
 
 Le dossier library est necessaire pour la carte STM32. Il s'agit d'une librairie conçue par STMicroelectronics que l'on a utilisée directement. 
-
-Choses A faire :
-1. la gestion de communication entre Raspberry Pi
-2. la gestion de protection d'utilisateur
-3. la gestion de la direction de guidon 
+=
