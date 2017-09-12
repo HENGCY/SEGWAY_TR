@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.20.0 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
-  <object class="GtkApplicationWindow" id="Fenêtre principale">
+  <requires lib="gtk+" version="3.0"/>
+  <object class="GtkApplicationWindow" id="mywindow">
+    <property name="name">fenetre_principale</property>
     <property name="can_focus">False</property>
     <property name="margin_left">1</property>
     <property name="margin_top">1</property>
-    <property name="resizable">False</property>
     <property name="window_position">center</property>
-    <property name="type_hint">desktop</property>
-    <property name="deletable">False</property>
+    <property name="default_width">1000</property>
+    <property name="default_height">600</property>
+    <property name="type_hint">dialog</property>
     <property name="gravity">static</property>
+    <property name="has_resize_grip">True</property>
     <child>
       <object class="GtkPaned">
         <property name="visible">True</property>
@@ -31,7 +33,7 @@
                     <property name="margin_right">25</property>
                     <property name="margin_top">25</property>
                     <property name="margin_bottom">5</property>
-                    <property name="label" translatable="yes">Angle (rad)</property>
+                    <property name="label" translatable="yes">Angle (deg)</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -46,10 +48,12 @@
                     <property name="margin_right">25</property>
                     <property name="margin_top">5</property>
                     <property name="margin_bottom">5</property>
+                    <property name="editable">False</property>
+                    <property name="justification">center</property>
                     <property name="left_margin">3</property>
-                    <property name="right_margin">3</property>
-                    <property name="top_margin">3</property>
-                    <property name="bottom_margin">3</property>
+                    <property name="right_margin">6</property>
+                    <property name="cursor_visible">False</property>
+                    <property name="accepts_tab">False</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -64,7 +68,7 @@
                     <property name="margin_right">25</property>
                     <property name="margin_top">25</property>
                     <property name="margin_bottom">5</property>
-                    <property name="label" translatable="yes">Vitesse angulaire (rad/sec)</property>
+                    <property name="label" translatable="yes">Vitesse angulaire (deg/sec)</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -75,7 +79,7 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Vitesse (m/s)</property>
+                    <property name="label" translatable="yes">Angle beta (deg)</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -83,25 +87,14 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="label_couple">
+                  <object class="GtkLabel" id="l_couple1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="margin_left">50</property>
                     <property name="margin_right">25</property>
                     <property name="margin_top">5</property>
                     <property name="margin_bottom">5</property>
-                    <property name="label" translatable="yes">Couple (N.m)</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Batterie</property>
+                    <property name="label" translatable="yes">Couple moteur (N.m)</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -109,17 +102,34 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">5</property>
+                    <property name="margin_right">5</property>
+                    <property name="margin_top">5</property>
+                    <property name="margin_bottom">5</property>
+                    <property name="label" translatable="yes">Batterie</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkTextView" id="vitesse_angulaire">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="margin_left">50</property>
+                    <property name="margin_left">25</property>
                     <property name="margin_right">25</property>
                     <property name="margin_top">5</property>
                     <property name="margin_bottom">5</property>
+                    <property name="editable">False</property>
+                    <property name="justification">center</property>
                     <property name="left_margin">3</property>
                     <property name="right_margin">3</property>
-                    <property name="top_margin">3</property>
-                    <property name="bottom_margin">3</property>
+                    <property name="cursor_visible">False</property>
+                    <property name="accepts_tab">False</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -127,17 +137,19 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkTextView" id="vitesse_lin">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="margin_left">25</property>
                     <property name="margin_right">25</property>
                     <property name="margin_top">5</property>
                     <property name="margin_bottom">5</property>
+                    <property name="editable">False</property>
+                    <property name="justification">center</property>
                     <property name="left_margin">3</property>
                     <property name="right_margin">3</property>
-                    <property name="top_margin">3</property>
-                    <property name="bottom_margin">3</property>
+                    <property name="cursor_visible">False</property>
+                    <property name="accepts_tab">False</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -145,30 +157,19 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkTextView" id="couple">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="margin_left">50</property>
+                    <property name="margin_left">25</property>
                     <property name="margin_right">25</property>
                     <property name="margin_top">5</property>
                     <property name="margin_bottom">5</property>
+                    <property name="editable">False</property>
+                    <property name="justification">center</property>
                     <property name="left_margin">3</property>
                     <property name="right_margin">3</property>
-                    <property name="top_margin">3</property>
-                    <property name="bottom_margin">3</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLevelBar">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="margin_left">25</property>
-                    <property name="margin_right">25</property>
-                    <property name="margin_bottom">25</property>
+                    <property name="cursor_visible">False</property>
+                    <property name="accepts_tab">False</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -176,22 +177,151 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="STOP_button">
-                    <property name="label" translatable="yes">STOP</property>
-                    <property name="name">bouton_stop</property>
+                  <object class="GtkTextView" id="batterie_lvl">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="margin_left">50</property>
+                    <property name="margin_left">25</property>
                     <property name="margin_right">25</property>
-                    <property name="margin_top">25</property>
-                    <property name="margin_bottom">25</property>
-                    <property name="action_name">STOP</property>
+                    <property name="margin_top">5</property>
+                    <property name="margin_bottom">5</property>
+                    <property name="editable">False</property>
+                    <property name="justification">center</property>
+                    <property name="left_margin">3</property>
+                    <property name="right_margin">3</property>
+                    <property name="cursor_visible">False</property>
+                    <property name="accepts_tab">False</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="l_couple2">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Présence utilisateur</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="top_attach">4</property>
-                    <property name="height">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkTextView" id="presence_user">
+                    <property name="height_request">0</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="margin_left">25</property>
+                    <property name="margin_right">25</property>
+                    <property name="margin_top">5</property>
+                    <property name="margin_bottom">5</property>
+                    <property name="editable">False</property>
+                    <property name="justification">center</property>
+                    <property name="cursor_visible">False</property>
+                    <property name="accepts_tab">False</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">25</property>
+                    <property name="margin_right">25</property>
+                    <property name="margin_top">5</property>
+                    <property name="margin_bottom">5</property>
+                    <property name="label" translatable="yes">Info :</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">8</property>
+                    <property name="width">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkTextView" id="info">
+                    <property name="height_request">0</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="margin_left">25</property>
+                    <property name="margin_right">25</property>
+                    <property name="margin_top">10</property>
+                    <property name="margin_bottom">10</property>
+                    <property name="editable">False</property>
+                    <property name="justification">center</property>
+                    <property name="cursor_visible">False</property>
+                    <property name="accepts_tab">False</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">9</property>
+                    <property name="width">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Arrêt d'urgence</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Etat communication</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkTextView" id="arret">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="margin_left">25</property>
+                    <property name="margin_right">25</property>
+                    <property name="margin_top">5</property>
+                    <property name="margin_bottom">5</property>
+                    <property name="editable">False</property>
+                    <property name="justification">center</property>
+                    <property name="left_margin">3</property>
+                    <property name="right_margin">3</property>
+                    <property name="cursor_visible">False</property>
+                    <property name="accepts_tab">False</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkTextView" id="etat_communication">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="margin_left">25</property>
+                    <property name="margin_right">25</property>
+                    <property name="margin_top">5</property>
+                    <property name="margin_bottom">5</property>
+                    <property name="editable">False</property>
+                    <property name="justification">center</property>
+                    <property name="left_margin">3</property>
+                    <property name="right_margin">3</property>
+                    <property name="cursor_visible">False</property>
+                    <property name="accepts_tab">False</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">7</property>
                   </packing>
                 </child>
               </object>
@@ -222,12 +352,26 @@
               </packing>
             </child>
             <child>
-              <object class="GtkTextView" id="texte_log">
-                <property name="name">texte_log</property>
+              <object class="GtkScrolledWindow" id="scroll">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="pixels_above_lines">5</property>
-                <property name="pixels_below_lines">5</property>
+                <property name="margin_left">2</property>
+                <property name="margin_right">2</property>
+                <property name="margin_top">5</property>
+                <property name="margin_bottom">2</property>
+                <property name="window_placement">bottom-left</property>
+                <property name="window_placement_set">False</property>
+                <property name="shadow_type">in</property>
+                <child>
+                  <object class="GtkTextView" id="log">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="resize_mode">immediate</property>
+                    <property name="editable">False</property>
+                    <property name="cursor_visible">False</property>
+                    <property name="accepts_tab">False</property>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="expand">True</property>
