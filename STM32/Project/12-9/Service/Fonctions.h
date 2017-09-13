@@ -90,6 +90,8 @@ void Trait_b_courant (void) ;
 void Trait_consigne(void);
 unsigned char * bintoascii(uint16_t data_bin);
 float bytes_to_float(unsigned char * bytes);
+void Delay(__IO uint32_t nTime);
+void TimingDelay_Decrement(void);
 
 #endif /* __FONCTIONS_H */
 

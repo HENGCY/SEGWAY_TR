@@ -57,8 +57,6 @@ void Init_ADC1_DMA1(void);
 void Init_USART(void);
 void TIM_Config(void);
 void Init_Bouton(void);
-void Delay(__IO uint32_t nTime);
-void TimingDelay_Decrement(void);
 
 
 #endif /* __INIT_H */

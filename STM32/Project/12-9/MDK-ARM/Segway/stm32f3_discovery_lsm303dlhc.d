@@ -1,11 +1,11 @@
 .\segway\stm32f3_discovery_lsm303dlhc.o: ..\..\..\Libraries\Utilities\STM32F3_Discovery\stm32f3_discovery_lsm303dlhc.c
 .\segway\stm32f3_discovery_lsm303dlhc.o: ..\..\..\Libraries\Utilities\STM32F3_Discovery\stm32f3_discovery_lsm303dlhc.h
 .\segway\stm32f3_discovery_lsm303dlhc.o: .\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include\stm32f30x.h
-.\segway\stm32f3_discovery_lsm303dlhc.o: C:\Keil_v5\ARM\CMSIS\Include\core_cm4.h
-.\segway\stm32f3_discovery_lsm303dlhc.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-.\segway\stm32f3_discovery_lsm303dlhc.o: C:\Keil_v5\ARM\CMSIS\Include\core_cmInstr.h
-.\segway\stm32f3_discovery_lsm303dlhc.o: C:\Keil_v5\ARM\CMSIS\Include\core_cmFunc.h
-.\segway\stm32f3_discovery_lsm303dlhc.o: C:\Keil_v5\ARM\CMSIS\Include\core_cm4_simd.h
+.\segway\stm32f3_discovery_lsm303dlhc.o: D:\Keil_v5\ARM\CMSIS\Include\core_cm4.h
+.\segway\stm32f3_discovery_lsm303dlhc.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\segway\stm32f3_discovery_lsm303dlhc.o: D:\Keil_v5\ARM\CMSIS\Include\core_cmInstr.h
+.\segway\stm32f3_discovery_lsm303dlhc.o: D:\Keil_v5\ARM\CMSIS\Include\core_cmFunc.h
+.\segway\stm32f3_discovery_lsm303dlhc.o: D:\Keil_v5\ARM\CMSIS\Include\core_cm4_simd.h
 .\segway\stm32f3_discovery_lsm303dlhc.o: .\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include\system_stm32f30x.h
 .\segway\stm32f3_discovery_lsm303dlhc.o: .\..\stm32f30x_conf.h
 .\segway\stm32f3_discovery_lsm303dlhc.o: .\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_adc.h

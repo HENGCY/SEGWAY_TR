@@ -2,11 +2,11 @@
 .\segway\accelerometre.o: ..\Service\Accelerometre.h
 .\segway\accelerometre.o: ..\..\..\Libraries\Utilities\STM32F3_Discovery\stm32f3_discovery_lsm303dlhc.h
 .\segway\accelerometre.o: .\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include\stm32f30x.h
-.\segway\accelerometre.o: C:\Keil_v5\ARM\CMSIS\Include\core_cm4.h
-.\segway\accelerometre.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-.\segway\accelerometre.o: C:\Keil_v5\ARM\CMSIS\Include\core_cmInstr.h
-.\segway\accelerometre.o: C:\Keil_v5\ARM\CMSIS\Include\core_cmFunc.h
-.\segway\accelerometre.o: C:\Keil_v5\ARM\CMSIS\Include\core_cm4_simd.h
+.\segway\accelerometre.o: D:\Keil_v5\ARM\CMSIS\Include\core_cm4.h
+.\segway\accelerometre.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\segway\accelerometre.o: D:\Keil_v5\ARM\CMSIS\Include\core_cmInstr.h
+.\segway\accelerometre.o: D:\Keil_v5\ARM\CMSIS\Include\core_cmFunc.h
+.\segway\accelerometre.o: D:\Keil_v5\ARM\CMSIS\Include\core_cm4_simd.h
 .\segway\accelerometre.o: .\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include\system_stm32f30x.h
 .\segway\accelerometre.o: .\..\stm32f30x_conf.h
 .\segway\accelerometre.o: .\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_adc.h

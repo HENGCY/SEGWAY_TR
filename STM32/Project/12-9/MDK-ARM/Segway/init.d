@@ -1,11 +1,11 @@
 .\segway\init.o: ..\Service\Init.c
 .\segway\init.o: ..\Service\Init.h
 .\segway\init.o: .\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include\stm32f30x.h
-.\segway\init.o: C:\Keil_v5\ARM\CMSIS\Include\core_cm4.h
-.\segway\init.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-.\segway\init.o: C:\Keil_v5\ARM\CMSIS\Include\core_cmInstr.h
-.\segway\init.o: C:\Keil_v5\ARM\CMSIS\Include\core_cmFunc.h
-.\segway\init.o: C:\Keil_v5\ARM\CMSIS\Include\core_cm4_simd.h
+.\segway\init.o: D:\Keil_v5\ARM\CMSIS\Include\core_cm4.h
+.\segway\init.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\segway\init.o: D:\Keil_v5\ARM\CMSIS\Include\core_cmInstr.h
+.\segway\init.o: D:\Keil_v5\ARM\CMSIS\Include\core_cmFunc.h
+.\segway\init.o: D:\Keil_v5\ARM\CMSIS\Include\core_cm4_simd.h
 .\segway\init.o: .\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include\system_stm32f30x.h
 .\segway\init.o: .\..\stm32f30x_conf.h
 .\segway\init.o: .\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_adc.h
