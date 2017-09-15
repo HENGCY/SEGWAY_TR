@@ -74,6 +74,8 @@ float AccBuffer[3] = {0.0f}, Buffer[3] = {0.0f};	// tableau pour lecture de vale
 
 //Variable de vitesse lineaire du système
 float VitesseLineaire=0;
+float moy_vit=0;																	// variable  pour moyenner la vitesse lineaire  
+int compt_vit=0; 																	// variable de compteur pour moyenner la vitesse lineaire  
 
 //	Variable for gestion de consigne
 float Consigne1=0.0,Consigne2=0.0;								// variable de consigne de courant pour boucle de courant 
@@ -291,7 +293,7 @@ void Trait_b_courant (void) {
 	/*
 
  		// Prendre la valeur de tension dans guidon [1950 ; 2560 ; 2910]
- 		ADC1ConvertedValue =  MOY_ADC12_IN8;//IN8
+  		ADC1ConvertedValue =  MOY_ADC12_IN8;//IN8
  		ADC1ConvertedVoltage = (ADC1ConvertedValue *ScaleADC)/0xFFF; // Conversion en tension (1950-2910)
  		
  		//cas 1 : La valeur lu est dehors des valeurs limitées
@@ -394,7 +396,13 @@ void Trait_b_courant (void) {
 	TIM_SetCompare1( TIM1,  PWM_MOTEUR1);		// ecriture de CCR1 de 16 bits
 	TIM_SetCompare2( TIM1,  PWM_MOTEUR2);		// ecriture de CCR2 de 16 bits		
 	
-	VitesseLineaire = (((2.0f * u1_k - 1.0f) - 0.47f * IM1) * Rw) / (Km * Kg);
+	if (compt_vit> 20){
+		VitesseLineaire= moy_vit/20.0f;
+		compt_vit=0;
+	}else{
+		moy_vit = (((2.0f * u1_k - 1.0f) - 0.47f * IM1) * Rw) / (Km * Kg);
+		compt_vit++;
+	}
 
 }
 

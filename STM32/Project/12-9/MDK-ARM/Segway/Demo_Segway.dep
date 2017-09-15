@@ -780,7 +780,7 @@ I (.\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_usart.h)(0x5063
 I (.\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_misc.h)(0x5063187D)
 F (.\..\main.c)(0x59B7E6D9)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB --li -g -O3 --apcs=interwork --split_sections -I .\..\ -I .\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include -I .\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc -I ..\..\..\Libraries\Utilities\STM32F3_Discovery -I ..\Service-ID:\Keil_v5\ARM\RV31\INC-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DUSE_STDPERIPH_DRIVER -DSTM32F30X-o .\segway\main.o --omf_browse .\segway\main.crf --depend .\segway\main.d)
 I (..\main.h)(0x59B7B9EC)
-I (..\Service\Fonctions.h)(0x59B7FEDA)
+I (..\Service\Fonctions.h)(0x59B8E074)
 I (.\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include\stm32f30x.h)(0x506317FB)
 I (D:\Keil_v5\ARM\CMSIS\Include\core_cm4.h)(0x559D31EA)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588C5634)
@@ -816,9 +816,9 @@ I (..\Service\Gyroscope.h)(0x59B7AFC1)
 I (..\..\..\Libraries\Utilities\STM32F3_Discovery\stm32f3_discovery_l3gd20.h)(0x506318B2)
 I (..\Service\Accelerometre.h)(0x59B7AFE6)
 I (..\..\..\Libraries\Utilities\STM32F3_Discovery\stm32f3_discovery_lsm303dlhc.h)(0x59AD258D)
-I (..\Service\Init.h)(0x59B7D978)
+I (..\Service\Init.h)(0x59B8E06D)
 I (D:\Keil_v5\ARM\ARMCC\include\math.h)(0x588C5634)
-F (.\..\stm32f30x_it.c)(0x59B7F34F)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB --li -g -O3 --apcs=interwork --split_sections -I .\..\ -I .\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include -I .\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc -I ..\..\..\Libraries\Utilities\STM32F3_Discovery -I ..\Service-ID:\Keil_v5\ARM\RV31\INC-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DUSE_STDPERIPH_DRIVER -DSTM32F30X-o .\segway\stm32f30x_it.o --omf_browse .\segway\stm32f30x_it.crf --depend .\segway\stm32f30x_it.d)
+F (.\..\stm32f30x_it.c)(0x59B94E05)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB --li -g -O3 --apcs=interwork --split_sections -I .\..\ -I .\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include -I .\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc -I ..\..\..\Libraries\Utilities\STM32F3_Discovery -I ..\Service-ID:\Keil_v5\ARM\RV31\INC-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DUSE_STDPERIPH_DRIVER -DSTM32F30X-o .\segway\stm32f30x_it.o --omf_browse .\segway\stm32f30x_it.crf --depend .\segway\stm32f30x_it.d)
 I (..\stm32f30x_it.h)(0x58ECCB7C)
 I (.\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include\stm32f30x.h)(0x506317FB)
 I (D:\Keil_v5\ARM\CMSIS\Include\core_cm4.h)(0x559D31EA)
@@ -851,13 +851,13 @@ I (.\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_usart.h)(0x5063
 I (.\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_wwdg.h)(0x5063187D)
 I (.\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_misc.h)(0x5063187D)
 I (..\main.h)(0x59B7B9EC)
-I (..\Service\Fonctions.h)(0x59B7FEDA)
+I (..\Service\Fonctions.h)(0x59B8E074)
 I (..\..\..\Libraries\Utilities\STM32F3_Discovery\stm32f3_discovery.h)(0x506318B2)
 I (..\Service\Gyroscope.h)(0x59B7AFC1)
 I (..\..\..\Libraries\Utilities\STM32F3_Discovery\stm32f3_discovery_l3gd20.h)(0x506318B2)
 I (..\Service\Accelerometre.h)(0x59B7AFE6)
 I (..\..\..\Libraries\Utilities\STM32F3_Discovery\stm32f3_discovery_lsm303dlhc.h)(0x59AD258D)
-I (..\Service\Init.h)(0x59B7D978)
+I (..\Service\Init.h)(0x59B8E06D)
 I (D:\Keil_v5\ARM\ARMCC\include\math.h)(0x588C5634)
 F (.\..\system_stm32f30x.c)(0x5063187F)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB --li -g -O3 --apcs=interwork --split_sections -I .\..\ -I .\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include -I .\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc -I ..\..\..\Libraries\Utilities\STM32F3_Discovery -I ..\Service-ID:\Keil_v5\ARM\RV31\INC-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DUSE_STDPERIPH_DRIVER -DSTM32F30X-o .\segway\system_stm32f30x.o --omf_browse .\segway\system_stm32f30x.crf --depend .\segway\system_stm32f30x.d)
 I (.\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include\stm32f30x.h)(0x506317FB)
@@ -891,7 +891,7 @@ I (.\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_usart.h)(0x5063
 I (.\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_wwdg.h)(0x5063187D)
 I (.\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_misc.h)(0x5063187D)
 F (..\Service\Init.c)(0x59B7D9A1)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB --li -g -O3 --apcs=interwork --split_sections -I .\..\ -I .\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include -I .\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc -I ..\..\..\Libraries\Utilities\STM32F3_Discovery -I ..\Service-ID:\Keil_v5\ARM\RV31\INC-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DUSE_STDPERIPH_DRIVER -DSTM32F30X-o .\segway\init.o --omf_browse .\segway\init.crf --depend .\segway\init.d)
-I (..\Service\Init.h)(0x59B7D978)
+I (..\Service\Init.h)(0x59B8E06D)
 I (.\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include\stm32f30x.h)(0x506317FB)
 I (D:\Keil_v5\ARM\CMSIS\Include\core_cm4.h)(0x559D31EA)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588C5634)
@@ -955,8 +955,8 @@ I (.\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_tim.h)(0x506318
 I (.\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_usart.h)(0x5063187D)
 I (.\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_wwdg.h)(0x5063187D)
 I (.\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_misc.h)(0x5063187D)
-F (..\Service\Fonctions.c)(0x59B7FEDA)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB --li -g -O3 --apcs=interwork --split_sections -I .\..\ -I .\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include -I .\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc -I ..\..\..\Libraries\Utilities\STM32F3_Discovery -I ..\Service-ID:\Keil_v5\ARM\RV31\INC-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DUSE_STDPERIPH_DRIVER -DSTM32F30X-o .\segway\fonctions.o --omf_browse .\segway\fonctions.crf --depend .\segway\fonctions.d)
-I (..\Service\Fonctions.h)(0x59B7FEDA)
+F (..\Service\Fonctions.c)(0x59BA9532)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB --li -g -O3 --apcs=interwork --split_sections -I .\..\ -I .\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include -I .\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc -I ..\..\..\Libraries\Utilities\STM32F3_Discovery -I ..\Service-ID:\Keil_v5\ARM\RV31\INC-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DUSE_STDPERIPH_DRIVER -DSTM32F30X-o .\segway\fonctions.o --omf_browse .\segway\fonctions.crf --depend .\segway\fonctions.d)
+I (..\Service\Fonctions.h)(0x59B8E074)
 I (.\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include\stm32f30x.h)(0x506317FB)
 I (D:\Keil_v5\ARM\CMSIS\Include\core_cm4.h)(0x559D31EA)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588C5634)
@@ -992,7 +992,7 @@ I (..\Service\Gyroscope.h)(0x59B7AFC1)
 I (..\..\..\Libraries\Utilities\STM32F3_Discovery\stm32f3_discovery_l3gd20.h)(0x506318B2)
 I (..\Service\Accelerometre.h)(0x59B7AFE6)
 I (..\..\..\Libraries\Utilities\STM32F3_Discovery\stm32f3_discovery_lsm303dlhc.h)(0x59AD258D)
-I (..\Service\Init.h)(0x59B7D978)
+I (..\Service\Init.h)(0x59B8E06D)
 I (D:\Keil_v5\ARM\ARMCC\include\math.h)(0x588C5634)
 F (..\Service\Accelerometre.c)(0x59B7B03E)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB --li -g -O3 --apcs=interwork --split_sections -I .\..\ -I .\..\..\..\Libraries\CMSIS\Device\ST\STM32F30x\Include -I .\..\..\..\Libraries\STM32F30x_StdPeriph_Driver\inc -I ..\..\..\Libraries\Utilities\STM32F3_Discovery -I ..\Service-ID:\Keil_v5\ARM\RV31\INC-ID:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DUSE_STDPERIPH_DRIVER -DSTM32F30X-o .\segway\accelerometre.o --omf_browse .\segway\accelerometre.crf --depend .\segway\accelerometre.d)
 I (..\Service\Accelerometre.h)(0x59B7AFE6)

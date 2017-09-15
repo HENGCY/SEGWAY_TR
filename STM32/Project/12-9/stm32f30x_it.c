@@ -162,7 +162,8 @@ void EXTI1_IRQHandler(void)
 	if (watchdog >= 50){
 		STM_EVAL_LEDToggle(LED8);
 		watchdog = 0;
-		Consigne_new = 0.0;
+		Consigne1 = 0.0f;
+		Consigne2 = 0.0f;
 	}	
 	
 	// Lecture de donnée et remplir buffer envoyer, puis envoyer de donnée 
@@ -263,7 +264,7 @@ void USART2_IRQHandler  (void)
 				switch (RX_USART[1]){
 					//cas de reception de trame de consigne 
 						case 'c' : 	Consigne_OK=1;
-												Consigne_new=value;
+												Consigne_new=value/0.80435f;
 												// detection si le consigne ancien est le même 
 												// precaution de erreur de communication 
 												if(old_cons == Consigne_new){
