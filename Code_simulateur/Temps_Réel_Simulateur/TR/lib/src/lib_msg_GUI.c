@@ -17,12 +17,12 @@ int init_socket(int port){
 	int sockfd;
 	struct sockaddr_in serv_addr;
 	char *serv_host;
-	struct hostent *host_ptr; 
+	struct hostent *host_ptr;
 
 	//port = SERV_TCP_PORT;
 	// changer localhost en adresse IP serveur (faire DEFINE à modifier par l'étudiant)
-	serv_host = (char*)"localhost";
-	//serv_host = (char*)ADRESSE_IP;
+	//serv_host = (char*)"localhost";
+	serv_host = (char*)ADRESSE_IP;
 
 	if((host_ptr = gethostbyname(serv_host)) == NULL) {
 		rt_printf("gethostbyname error");
@@ -36,7 +36,7 @@ int init_socket(int port){
 
 	bzero((char *) &serv_addr, sizeof(serv_addr));
 	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_addr.s_addr = 
+	serv_addr.sin_addr.s_addr =
 	((struct in_addr *)host_ptr->h_addr_list[0])->s_addr;
 	serv_addr.sin_port = htons(port);
 
@@ -44,7 +44,7 @@ int init_socket(int port){
 		rt_printf("can't open stream socket");
 		exit(1);
 	}
- 
+
 	if(connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
 		rt_printf("can't connect to server\n");
 		exit(1);
@@ -75,7 +75,7 @@ void add_info_float(unsigned char * str, char label, float data,int * indice ){
 	str[ind ++] = f[2];
 	str[ind ++] = f[3];
 	str[ind++] = '\n';
-	
+
 	*indice=ind;
 }
 
@@ -100,7 +100,7 @@ void add_info_int(unsigned char * str, char label, int data,int * indice ){
     	str[ind ++] = f[2];
     	str[ind ++] = f[3];
 	str[ind++] = '\n';
-	
+
 	*indice=ind;
 }
 

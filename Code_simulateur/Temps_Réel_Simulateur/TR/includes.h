@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   includes.h
  * Author: INSA Toulouse
  *
@@ -13,11 +13,13 @@
 /*******************************************************************************/
 /*                 ENTRER ICI L'ADRESSE IP DE LA MACHINE EXECUTANT LE GUI       */
 #define ADRESSE_IP "10.32.1.80"
+
+//si socket en local, changer le lib_msg_GUI.c dans la fonction init_socket
 /*																									   									  */
 /*******************************************************************************/
 
 #include <stdio.h>
-#include <stdlib.h>     
+#include <stdlib.h>
 #include <sys/mman.h>
 #include <alchemy/task.h>
 #include <alchemy/mutex.h>
@@ -30,7 +32,7 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <termios.h>  
+#include <termios.h>
 
 #include <time.h>
 #include "global.h"
