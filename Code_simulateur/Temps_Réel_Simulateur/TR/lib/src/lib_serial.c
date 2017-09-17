@@ -26,8 +26,7 @@ int init_serial(){
 		exit(EXIT_FAILURE);
 	}
 
-	//Configuration of the serial port
-	//115 520 Bauds
+	//Configuration of the serial port 115 520 Bauds
 	struct termios options;
 	tcgetattr(uart0_filestream, &options);
 	options.c_cflag = B115200 | CS8 | CLOCAL | CREAD;		//<Set baud rate
@@ -72,21 +71,6 @@ int bytes_to_array_of_message(unsigned char * mesg, message_serial *m){
 	return ret;
 }
 
-
-int bytes_to_message(unsigned char * mesg, message_serial * m){
-	int ret =0;
-	if(mesg[0] == '<' && mesg[6] == '\n' ){
-		m->label = mesg[1];
-		m->value = bytes_to_float(&mesg[2]);
-		ret=1;
-	}else{
-		m->label = 'e';
-		ret = 0;
-	}
-	return ret;
-}
-
-
 /**
 	Converts a float into a byte sequence that is sent on the serial port 
 	the message is '<'{tag}{the float encoded on 4 bytes}'\n
@@ -125,7 +109,7 @@ int send_float_to_serial(float fl_value, char label){
 
 int send_int_to_serial(int int_value, char label){
 
-	float tampon=100000.05f + int_value;
+	float tampon= int_value;
 	unsigned char * msg = (unsigned char *) &tampon; 
 	int ret_val = 0;
 	unsigned char tx_buffer[MESSAGE_SERIAL_LENGTH];
@@ -172,29 +156,34 @@ float bytes_to_float(unsigned char * bytes){
 	Reads a message from the serial port. 
 	The function is blocked until a suitable message is received. 
 */
+int lost_com=0;
+
 message_serial*  read_from_serial(){
 
 	int message_length = 0;
 	unsigned char message_buffer[256];
-    	static message_serial m[5];
-    	int i,j,pass = 0;
+    static message_serial m[5];
+    int i,j,pass = 0;
+	long k=0; 
 	int passtotal = 0;
 	while (passtotal == 0)
 	{
 	    // Read up to 255 characters from the port if they are there
 	    unsigned char rx_buffer[256];
-	    int rx_length = read(uart0_filestream, (void*)rx_buffer,75);		//Filestream, buffer to store in, number of bytes to read (max)
-           
-            if (rx_length < 0)
+	    int rx_length = read(uart0_filestream, (void*)rx_buffer,MESSAGE_SERIAL_LENGTH-j);		//Filestream, buffer to store in, number of bytes to read (max)
+         k++;
+        if (rx_length < 0)
 		{
 			//rt_printf("Error when checking for rx bytes\n");
 		}
 		else if (rx_length == 0)
 		{
-			rt_printf("No data is available");
+			//rt_printf("No data is available");
 		}
 		else
-		{			
+		{		
+			lost_com=0;
+			k=0;
 		    for (i = 0; i<rx_length; i++) {
 		        if (pass==1) {
 		            if (rx_buffer[i]=='X'){
@@ -205,13 +194,21 @@ message_serial*  read_from_serial(){
 		                j++;
 		            }
 		        }                    
-		        else if (rx_buffer[i]=='R' /*&& rx_buffer[i+1]=='<'*/){
+		        else if (rx_buffer[i]=='R' ){
 		            j=0;
 		            pass= 1;
 		        }	
 		    }                    
-         }            
-    }
+         }    //else
+
+		if (k >10000){
+			k=0;
+			rt_printf("Perte de connexion\n");
+			passtotal=1;
+			lost_com=1;
+		}
+        
+    }//while passtotal
 
     bytes_to_array_of_message(message_buffer, m);
     return m;
@@ -223,7 +220,7 @@ int close_serial(){
 }
 
 
-void printf_trame(message_serial *m){
+void write_trame_to_data(message_serial *m){
     int i;
 	for (i=0;i<5;i++){
 		switch ((m+i)->label){
@@ -231,31 +228,31 @@ void printf_trame(message_serial *m){
 			rt_mutex_acquire(&var_mutex_etat_angle, TM_INFINITE);
 			etat_angle.set_angle((m+i)->value);
 			rt_mutex_release(&var_mutex_etat_angle);
-			//rt_printf("Position angulaire: %f\n",(m+i)->value);	
+
 			break;
 		case 's':
 			rt_mutex_acquire(&var_mutex_etat_angle, TM_INFINITE);
            		etat_angle.set_vitesse_ang((m+i)->value); 
 			rt_mutex_release(&var_mutex_etat_angle);
-			//rt_printf("Vitesse angulaire: %f\n",(m+i)->value);	
+
 			break;
 		case 'b':
 			rt_mutex_acquire(&var_mutex_batterie, TM_INFINITE);
 			batterie.set_level((int)((m+i)->value));
 			rt_mutex_release(&var_mutex_batterie);
-			//rt_printf("Niveau de batterie: %f\n",(m+i)->value);
+
 			break;
 		case 'v':	
-			rt_mutex_acquire(&var_mutex_vitesse, TM_INFINITE);
-            		vitesse_lin.set_vitesse((m+i)->value); 
-			rt_mutex_release(&var_mutex_vitesse);
-			//rt_printf("Vitesse linéaire: %f\n",(m+i)->value);
+			rt_mutex_acquire(&var_mutex_beta, TM_INFINITE);
+            beta.set_beta((m+i)->value); 
+			rt_mutex_release(&var_mutex_beta);
+
 			break;
 		case 'u':
 			rt_mutex_acquire(&var_mutex_presence_user, TM_INFINITE);
 			presence_user = (int)(m+i)->value;
 			rt_mutex_release(&var_mutex_presence_user);
-			//rt_printf("Presence user %f\n",(m+i)->value);
+
 			break;
               		rt_printf("Unknown message type : tag '%c'\n", (m+i)->label);
                 }

@@ -12,7 +12,7 @@ int main(int argc, char *argv[]){
 	etat_com = 1;
 	pass=0;				// Sert de flag pour notifier l'initialisation des sockets
 	arret=0;
-	c=0;
+	compteur=0;						// Uitlisé par la fonction update_log
 	presence=1;
 
 	GtkBuilder *gtkBuilder;
@@ -53,7 +53,6 @@ int main(int argc, char *argv[]){
 	/* Affichage */
 	app->top = gtk_widget_get_toplevel(GTK_WIDGET(app->mywindow));
 	gtk_widget_show(app->mywindow);	
-	//gtk_window_fullscreen(GTK_WINDOW(app->top));
 	
 	/* Boucle evenementielle */
 	gtk_main();

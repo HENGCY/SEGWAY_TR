@@ -7,7 +7,9 @@
 
 #include "fonctions.h"
 
-void Asservissement(void *arg) /* OK */
+/* La tâche Asservissement, en fonction de la mise à jour ou non des valeurs du STM32,
+ *  calcule puis envoie dans la file de message une nouvelle consigne de courant pour le STM */
+void Asservissement(void *arg) 
 {
 	float angle, vit_angulaire, c;
 	int com;
@@ -19,20 +21,18 @@ void Asservissement(void *arg) /* OK */
 	log_task_entered();
 	
 	while (1) {
-	    rt_printf("Thread Asservissement \n");
+
 		rt_task_wait_period(NULL);
-		 
-		rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
+		rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);		// On vérifie que les communications ont lieu (from & to STM)
 		log_mutex_acquired(&var_mutex_etat_com);		
 		com = etat_com;
 		rt_mutex_release(&var_mutex_etat_com);
 		log_mutex_released(&var_mutex_etat_com);	
 		
 		if (com){
-			
 			rt_mutex_acquire(&var_mutex_etat_angle, TM_INFINITE);
 			log_mutex_acquired(&var_mutex_etat_angle);	
-
+			/* Récupération de la valeur d'angle et de vitesse angulaire du gyropode */
 			angle = etat_angle.angle();
 			vit_angulaire = etat_angle.vitesse_ang();
 
@@ -42,11 +42,12 @@ void Asservissement(void *arg) /* OK */
 			rt_mutex_acquire(&var_mutex_etat_reception, TM_INFINITE);
 			log_mutex_acquired(&var_mutex_etat_reception);
 	
-			com = etat_reception;  
+			com = etat_reception;  // Les valeurs de l'état du gyropode sont elles à jour ?
 
 			rt_mutex_release(&var_mutex_etat_reception);
 			log_mutex_released(&var_mutex_etat_reception);	
 			
+			// Si oui...
 			if(com) {
 				c = -1*(k1 * angle + k2 * vit_angulaire);
 
@@ -61,7 +62,7 @@ void Asservissement(void *arg) /* OK */
 				rt_mutex_acquire(&var_mutex_etat_reception, TM_INFINITE);
 				log_mutex_acquired(&var_mutex_etat_reception);	
 
-		  		etat_reception = 0 ;  
+		  		etat_reception = 0 ;		// On déclare ainsi que les valeurs nécessaires au calcul de l'asservissement sont obsolètes
 
 				rt_mutex_release(&var_mutex_etat_reception);
 				log_mutex_released(&var_mutex_etat_reception);	
@@ -70,14 +71,15 @@ void Asservissement(void *arg) /* OK */
 				message_stm m;
 				m.label = 'c';
 				m.fval = c;
+				/* Envoi de la consigne de couple dans la file de message */
 				err = rt_queue_write(&queue_Msg2STM,&m,sizeof(message_stm),Q_NORMAL);		
-
-				rt_sem_v(&var_sem_envoyer);
 			}
 		}
 	}
 }
 
+/* La tâche Presence_User vérifie périodiquement la présence de l'utilisateur sur le gyropode
+ *  déclenche l'arrêt d'urgence si l'utilisateur n'est pas présent */
  void Presence_User(void *arg) 
 {
 	int com;
@@ -89,7 +91,7 @@ void Asservissement(void *arg) /* OK */
 	log_task_entered();
 	
 	while (1) {
-	    rt_printf("Thread Presence_user \n");
+
 		rt_task_wait_period(NULL);
 		
 		rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
@@ -118,9 +120,11 @@ void Asservissement(void *arg) /* OK */
 	}
 }
 
+/* La tâche Surveillance_Batterie vérifie périodiquement le niveau de batterie du gyropode
+ *  déclenche l'arrêt d'urgence si la batterie est trop faible (<15%) */
  void Surveillance_Batterie(void *arg) /* OK */
 {
-	int com;
+	int com, arr, pres;
 	int bat_lvl;
 
 	rt_printf("Thread Surveillance_Batterie : Debut de l'éxecution de periodique à 1 Hz\n");
@@ -129,7 +133,7 @@ void Asservissement(void *arg) /* OK */
 	log_task_entered();
 	
 	while (1) {
-    		rt_printf("Thread Batterie \n");	
+  
 		rt_task_wait_period(NULL);
 		
 		rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
@@ -139,9 +143,16 @@ void Asservissement(void *arg) /* OK */
 
 		rt_mutex_release(&var_mutex_etat_com);
 		log_mutex_released(&var_mutex_etat_com);	
+
+		rt_mutex_acquire(&var_mutex_presence_user, TM_INFINITE);
+		log_mutex_acquired(&var_mutex_presence_user);
+
+		pres = presence_user;
+
+		rt_mutex_release(&var_mutex_presence_user);
+		log_mutex_released(&var_mutex_presence_user);
 		
 		if (com){
-		
 			rt_mutex_acquire(&var_mutex_batterie, TM_INFINITE);	
 			log_mutex_acquired(&var_mutex_batterie);	
 
@@ -149,70 +160,66 @@ void Asservissement(void *arg) /* OK */
 
 			rt_mutex_release(&var_mutex_batterie);
 			log_mutex_released(&var_mutex_batterie);	
-			
-			if(bat_lvl < 5){
+	
+			if(bat_lvl < 15){
 				log_sem_signaled(&var_sem_arret);
 				rt_sem_v(&var_sem_arret);
+			} else if (pres=1) {
+				rt_mutex_acquire(&var_mutex_arret, TM_INFINITE);
+				log_mutex_acquired(&var_mutex_arret);
+				arret = 0;
+				rt_mutex_release(&var_mutex_arret);
+				log_mutex_released(&var_mutex_arret);
 			}
-		}              
+		}          
 	}
 }
 
+/* La tâche Communication est chargée de mettre en place la communication avec le STM32,
+ *  à la réception d'un mesage du STM, elle décripte la trame et met à jour les informations
+ *  des variables partagées. */
 void Communication(void *arg) 
 {
 	int uart0_filestream = -1;
 	int i;
 	int com = 0;
-	int timer1 = 0;
-	int timer2 = 0;
-	unsigned char message_buffer[256];
-	int message_length = 0;
-	float angular_position = 0;
-	float angular_speed = 0;
-
+	int etat_rep=0;
 	unsigned char tx_buffer[20];
 	unsigned char *p_tx_buffer;
 	message_serial *m;
-
-	rt_printf("Thread Communication : Debut de l'éxecution de periodique à  50 Hz\n");
-	rt_task_set_periodic(NULL, TM_NOW, 50000000);
+	
+	rt_printf("Thread Communication : Debut de l'éxecution de periodique à 50 Hz\n");
+	rt_task_set_periodic(NULL, TM_NOW, 20000000);
 
 	log_task_entered();
 
 	while (1) {
-    		rt_printf("Thread Communication \n");
+
 			rt_task_wait_period(NULL);
 
 			uart0_filestream = init_serial();
 
-        	if(uart0_filestream == -1){
-            
+        	if(uart0_filestream == -1){      
 				rt_printf("Can't Use the UART\n");
-
+			  	etat_rep = 0;  
+				com = 0;
 				log_sem_signaled(&var_sem_arret);
 			   	rt_sem_v(&var_sem_arret);
-
-				rt_mutex_acquire(&var_mutex_etat_reception, TM_INFINITE);
-				log_mutex_acquired(&var_mutex_etat_reception);
-
-			  	etat_reception = 0;  
-
-				rt_mutex_release(&var_mutex_etat_reception);   
-				log_mutex_released(&var_mutex_etat_reception);     
 			}
 			else{
-		        com = 1;
+		        
 		       	m = (message_serial*)malloc(5*sizeof(message_serial));
 		       	m = read_from_serial();
-				printf_trame(m);
-
-				rt_mutex_acquire(&var_mutex_etat_reception, TM_INFINITE);
-				log_mutex_acquired(&var_mutex_etat_reception);
-
-		  		etat_reception = 1;  
-
-				rt_mutex_release(&var_mutex_etat_reception);
-				log_mutex_released(&var_mutex_etat_reception);
+				if (lost_com==0){
+					write_trame_to_data(m);
+					com = 1;
+			  		etat_rep  = 1;  
+				}else {
+						com=0;
+						etat_rep  = 0;  
+						log_sem_signaled(&var_sem_arret);
+				   		rt_sem_v(&var_sem_arret);
+				}
         	}   
 
 			rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
@@ -222,10 +229,20 @@ void Communication(void *arg)
 
 			rt_mutex_release(&var_mutex_etat_com);
 			log_mutex_released(&var_mutex_etat_com);
+
+			rt_mutex_acquire(&var_mutex_etat_reception, TM_INFINITE);
+			log_mutex_acquired(&var_mutex_etat_reception);
+
+	  		etat_reception=etat_rep;  
+
+			rt_mutex_release(&var_mutex_etat_reception);
+			log_mutex_released(&var_mutex_etat_reception);
     	} 
 }
 
-
+/* La tâche Affichage communique à l'interface graphique (GUI) (qui s'éxécute dans le noyau Linux) à travers un socket, 
+ *  les valeurs des variables partagées du programme de temps réel
+ *  cette fonction n'a pas à être modifiée, à part modification du GUI et ajout d'informations à envoyer */
 void Affichage(void *arg){
 
 	unsigned char *str;
@@ -242,7 +259,7 @@ void Affichage(void *arg){
 	log_task_entered();
 	
 	while(1){
-		rt_printf("Thread Affichage \n");
+
 		rt_task_wait_period(NULL);
 
 		str = (unsigned char*)malloc(56* sizeof(unsigned char)); // 56 = (n * 7 ) avec n nombre de fonctions "add_info"
@@ -256,13 +273,13 @@ void Affichage(void *arg){
 		rt_mutex_release(&var_mutex_etat_angle);
 		log_mutex_released(&var_mutex_etat_angle);
 
-		rt_mutex_acquire(&var_mutex_vitesse, TM_INFINITE);
-		log_mutex_acquired(&var_mutex_vitesse);
+		rt_mutex_acquire(&var_mutex_beta, TM_INFINITE);
+		log_mutex_acquired(&var_mutex_beta);
 
-		tamp3 = vitesse_lin.vitesse();
+		tamp3 = beta.beta();
 
-		rt_mutex_release(&var_mutex_vitesse);
-		log_mutex_released(&var_mutex_vitesse);
+		rt_mutex_release(&var_mutex_beta);
+		log_mutex_released(&var_mutex_beta);
 
 		rt_mutex_acquire(&var_mutex_consigne_couple, TM_INFINITE);
 		log_mutex_acquired(&var_mutex_consigne_couple);
@@ -291,7 +308,7 @@ void Affichage(void *arg){
 		rt_mutex_acquire(&var_mutex_etat_com, TM_INFINITE);
 		log_mutex_acquired(&var_mutex_etat_com);
 
-	  	com =etat_com;
+	  	com = etat_com;
 
 		rt_mutex_release(&var_mutex_etat_com);
 		log_mutex_released(&var_mutex_etat_com);
@@ -318,13 +335,13 @@ void Affichage(void *arg){
     	}
 }
 
+/* Cette fonction peut être déclenchée par les threads Presence_user et Surveillance_Batterie,
+ *  elle envoie alors sur la file de messages un message de type arrêt ('a',1) qui sera envoyé au STM32 */
 void Arret_Urgence(void *arg){	
 
 	log_task_entered();
 
 	while(1){
-		rt_printf("Thread Arret \n");
-
 		log_sem_waiting(&var_sem_arret);
 		rt_sem_p(&var_sem_arret,TM_INFINITE);
 		log_sem_entered(&var_sem_arret);
@@ -343,13 +360,11 @@ void Arret_Urgence(void *arg){
 		m.ival = 1;
 		err = rt_queue_write(&queue_Msg2STM,&m,sizeof(message_stm),Q_NORMAL);		
 
-		/*log_sem_signaled(&var_sem_envoyer);
-		rt_sem_v(&var_sem_envoyer);*/
-
 	}
 }
 
-
+/* La tâche Envoyer est simplement chargée d'envoyer les messages contenus dans la file de messages
+ *  au STM32 à travers la liaison UART */
 void Envoyer(void *arg){
 
 	rt_printf("Thread Envoyer : Debut de l'éxecution de periodique à 100 Hz\n");
@@ -358,7 +373,6 @@ void Envoyer(void *arg){
 	log_task_entered();
 
 	while(1){
-		rt_printf("Thread Envoyer \n");
 		rt_task_wait_period(NULL);
 
 		message_stm m;
@@ -370,25 +384,5 @@ void Envoyer(void *arg){
 		else if(m.label == 'a'){
 			send_int_to_serial(m.ival,'a');
 		}
-
-		/*log_sem_waiting(&var_sem_envoyer);
-		rt_sem_p(&var_sem_envoyer,TM_INFINITE);
-		log_sem_entered(&var_sem_envoyer);
-
-		rt_mutex_acquire(&var_mutex_consigne_couple, TM_INFINITE);
-		log_mutex_acquired(&var_mutex_consigne_couple);
-
-		send_float_to_serial(consigne_couple.consigne(),'c');
-
-		rt_mutex_release(&var_mutex_consigne_couple);
-		log_mutex_released(&var_mutex_consigne_couple);
-
-		rt_mutex_acquire(&var_mutex_arret, TM_INFINITE);
-		log_mutex_acquired(&var_mutex_arret);
-		if(arret){
-			send_int_to_serial(arret,'a');
-		}
-		rt_mutex_release(&var_mutex_arret);
-		log_mutex_released(&var_mutex_arret);*/
 	}
 }

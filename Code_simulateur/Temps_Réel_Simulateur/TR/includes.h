@@ -12,31 +12,25 @@
 
 /*******************************************************************************/
 /*                 ENTRER ICI L'ADRESSE IP DE LA MACHINE EXECUTANT LE GUI       */
-#define ADRESSE_IP "170.170.170.170"
+#define ADRESSE_IP "10.32.1.80"
 /*																									   									  */
 /*******************************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>     
-#include <assert.h>
 #include <sys/mman.h>
 #include <alchemy/task.h>
 #include <alchemy/mutex.h>
 #include <alchemy/sem.h>
 #include <alchemy/timer.h>
 #include <alchemy/queue.h>
-#include <alchemy/pipe.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <netdb.h>
-#include <sys/file.h>
 
-#include <unistd.h>			//Used for UART
-#include <fcntl.h>			//Used for UART
-#include <termios.h>		        //Used for UART
+#include <sys/socket.h>
+
+#include <netdb.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <termios.h>  
 
 #include <time.h>
 #include "global.h"
@@ -44,8 +38,12 @@
 #include <signal.h>
 #include <string.h>
 #include <malloc.h>
-#include <pthread.h>
-#include <errno.h>
 
 #include "lib/lib.h"
+
+//#include <sys/types.h>
+//#include <arpa/inet.h>
+//#include <netinet/in.h>
+//#include <netinet/tcp.h>
+//#include <sys/file.h>
 #endif	/* INCLUDES_H */

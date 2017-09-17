@@ -42,10 +42,10 @@
 */
 #define DIRECTION_INITIAL                   (0.0)
 
-/*! \def VITESSE_LIN_INITIAL 
-    \brief Valeur décrivant la valeur initial de vitesse lineaire
+/*! \def BETA_INITIAL    
+    \brief Valeur décrivant la valeur initial de beta
 */
-#define VITESSE_LIN_INITIAL                 (0.0)
+#define BETA_INITIAL                 (0.0)
 
 /*********** etat_com **************/
 
@@ -58,15 +58,6 @@
     \brief Valeur décrivant la valeur de etat_com lorsque la communication est rompue
 */
 #define NON_CONNECTE		                (0)
-
-/*********** status **************/
-
-/*! \def NO_USER
-    \brief Valeur décrivant la valeur de status lorsque la présence de l'utilisateur
-	n'est pas détectée.
-*/
-#define NO_USER								(3)
-
 
 
 

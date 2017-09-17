@@ -7,27 +7,27 @@
 
 #include "../inc/lib_monitor.h"
 
-/**
-	Function used by the TASK write_log in order to write events to a file
-	The periodicity is 1s
-	The function reads every message availible in the queue and parse them into the
-	file log.xenolog
-	Warning : This task goes into secondary mode (because of asprintf and fflush())
-	@params void *arg
-*/
-
+//declaration 
 RT_TASK write_log;
 RTIME begin_time;
 RT_QUEUE log_queue;
 FILE* log_file;
 void * buf;
 int recording_enabled;
-
+int sckt_log;
+/**
+     * \fn void Write_log(void *arg)
+     * \brief 		Function used by the TASK write_log in order to write events to a file. The periodicity is 1s. 
+	 * The function reads every message availible in the queue and parse them into the file log.xenolog
+	 * Warning : This task goes into secondary mode (because of asprintf and fflush())
+	 * \param void *arg
+	 * \return 1 if the recording is successfully launched, else 0.
+     */
 void Write_log(void *arg)
 {
-	int sckt_log;
+
 	rt_printf("WRITE LOG\n");
-	sckt_log = init_socket(PORT_LOG);
+	//sckt_log = init_socket(PORT_LOG);
 
 	rt_task_set_periodic(NULL, TM_NOW, SECENTOP);
 	while (1) {
@@ -39,8 +39,6 @@ void Write_log(void *arg)
 				rt_printf("ERROR : Couldn't open log_file\n");
 				//ret_value =0;
 		}
-		//if(flock(fileno(log_file),LOCK_EX)==0){
-
 			if(log_file != NULL){
 				int err = sizeof(message_log);
 				while(err == sizeof(message_log)){
@@ -70,26 +68,28 @@ void Write_log(void *arg)
 					}
 				}
 			}else{
-				rt_printf("Log : Error, can't access to log file\n");
+				//rt_printf("Log : Error, can't access to log file\n");
 			}
 		//flock(fileno(log_file),LOCK_UN);
 		//fclose(log_file);
 	}
 }
 
+
 /**
-	Initialize and start the recording of events (Tasks, semaphores and mutexes)
-    @return 1 if the recording is successfully launched, else 0.
-*/
+     * \fn int init_recording()
+     * \brief 	Initialize and start the recording of events (Tasks, semaphores and mutexes)
+	 * \return 1 if the recording is successfully launched, else 0.
+     */
 int init_recording(){
 	int ret_value = 0;
 
 	// initialize reference time at the begining of the log
 	begin_time =  rt_timer_ticks2ns(rt_timer_read());
-
+	sckt_log = init_socket(PORT_LOG);
 	// creates queue for the messages
 	int err = 0;
-	err = rt_queue_create(&log_queue, "Log Queue", sizeof(message_log)*12800, /*15000*/Q_UNLIMITED, Q_FIFO);
+	err = rt_queue_create(&log_queue, "Log Queue", sizeof(message_log)*25600, /*15000*/Q_UNLIMITED, Q_FIFO);
 	if (err<0){
 		switch(err){
 			case (-EINVAL):
@@ -127,10 +127,11 @@ int init_recording(){
 		return ret_value;
 }
 
+
 /**
-	Stop the event collection
-	Delete the queue, the task and then closes the log file.
-*/
+     * \fn void stop_recording()
+     * \brief Stop the event collection. Delete the queue, the task and then closes the log file.
+     */
 void stop_recording(){
 		recording_enabled = 0;
 		rt_queue_delete(&log_queue);
@@ -140,14 +141,13 @@ void stop_recording(){
 }
 
 /**
-	Writes a message into a queue
-
-	@params RT_QUEUE *msg_queue : the address of the queue
-	@params void * data : the address of message
-	@params int size : the size of the data
-
-	@return the error code return by the rt_queue
-*/
+     * \fn int write_in_queue(RT_QUEUE *msg_queue, void * buf, int size) 
+     * \brief 	Writes a message into a queue
+	 * \param RT_QUEUE *msg_queue : the address of the queue
+	 * \param void * data : the address of message
+	 * \param int size : the size of the data
+	 * \return the error code return by the rt_queue
+     */
 int write_in_queue(RT_QUEUE *msg_queue, void * buf, int size) {
 	int err=0;
 
@@ -166,22 +166,21 @@ int write_in_queue(RT_QUEUE *msg_queue, void * buf, int size) {
 }
 
 
-
 /**
-	Get the time between the start of recording and when it is called
-
-	@return the time in milliseconds
-*/
+     * \fn int get_time_ms()
+     * \brief 	Get the time between the start of recording and when it is called
+	 * \return time in milliseconds
+     */
 int get_time_ms(){
 	RTIME time = (rt_timer_ticks2ns(rt_timer_read())-begin_time)/1000000;
 	return (int)time;
 }
 
 /**
-	Get the time between the start of recording and when it is called
-
-	@return the time in microseconds
-*/
+     * \fn int get_time_us()
+     * \brief 	Get the time between the start of recording and when it is called
+	 * \return time in microseconds
+     */
 int get_time_us(){
 	RTIME time = (rt_timer_ticks2ns(rt_timer_read())-begin_time)/1000;
 	return (int)time;
@@ -189,19 +188,18 @@ int get_time_us(){
 
 
 /**
-	Builds a message to be sent to the queue
-
-	@params message_log * m : address of the message
-	@params int time : time of the creation (in ms)
-	@params char * task_name : name of the task
-	@params char * event : the event that created that message
-	@params char * sarg0 : generic string
-	@params char * sarg1 : generic string
-	@params char * sarg2 : generic string
-	@params int iarg0 : generic integer
-	@params int iarg1 : generic integer
-
-*/
+     * \fn void init_message(message_log * m, message_type type, int time, const char * task_name, const char * event, const char * sarg0, const char * sarg1, const char * sarg2, int iarg0, int iarg1)
+     * \brief 		Builds a message to be sent to the queue
+	 * \param    message_log * m : address of the message
+	 * \param    int time : time of the creation (in ms)
+	 * \param    char * task_name : name of the task
+	 * \param    char * event : the event that created that message
+	 * \param    char * sarg0 : generic string
+	 * \param    char * sarg1 : generic string
+	 * \param    char * sarg2 : generic string
+	 * \param    int iarg0 : generic integer
+	 * \param   int iarg1 : generic integer
+     */
 
 void init_message(message_log * m, message_type type, int time, const char * task_name, const char * event, const char * sarg0, const char * sarg1, const char * sarg2, int iarg0, int iarg1){
 
@@ -226,15 +224,13 @@ void init_message(message_log * m, message_type type, int time, const char * tas
 	}
 }
 
+
 /**
-
-	generic method to log en event regarding a mutex
-
-	@params RT_MUTEX * mut : the mutex
-	@params char * event : the event (waiting, acquired, released... )
-
-*/
-
+     * \fn void log_mutex_generic(RT_MUTEX * mut, const char * event)
+     * \brief 		generic method to log en event regarding a mutex
+	 * \param   RT_MUTEX * mut : the mutex
+	 * \param   char * event : the event (waiting, acquired, released... )
+     */
 void log_mutex_generic(RT_MUTEX * mut, const char * event){
 	if(recording_enabled){
 		message_log m;
@@ -250,40 +246,40 @@ void log_mutex_generic(RT_MUTEX * mut, const char * event){
 
 
 /**
-	logs when the task waits for a mutex
-	must be written just before the rt_mutex_acquire();
-	@params RT_MUTEX * mut : the mutex
-*/
+     * \fn log_wait_for_mutex(RT_MUTEX  * mut)
+     * \brief 		logs when the task waits for a mutex, it must be written just before the rt_mutex_acquire();
+	 * \param   RT_MUTEX * mut : the mutex
+     */
 void log_wait_for_mutex(RT_MUTEX  * mut){
 	log_mutex_generic(mut, "waiting");
 }
 
+
 /**
-	logs when the task has acquired a mutex
-	must be written just after the rt_mutex_acquire();
-	@params RT_MUTEX * mut : the mutex
-*/
+     * \fn log_mutex_acquired(RT_MUTEX * mut)
+     * \brief 	logs when the task has acquired a mutex, it must be written just after the rt_mutex_acquire();
+	 * \param   RT_MUTEX * mut : the mutex
+     */
 void log_mutex_acquired(RT_MUTEX * mut){
 	log_mutex_generic(mut, "acquired");
 }
 
+
 /**
-	logs when the task releases a mutex
-	must be written just after the rt_mutex_release();
-	@params RT_MUTEX * mut : the mutex
-*/
+     * \fn log_mutex_released(RT_MUTEX * mut)
+     * \brief 	logs when the task releases a mutex, it must be written just after the rt_mutex_release();
+	 * \param  RT_MUTEX * mut : the mutex
+     */
 void log_mutex_released(RT_MUTEX * mut){
 	log_mutex_generic(mut, "released");
 }
 
 /**
-
-	generic method to log en event regarding a semaphore
-
-	@params RT_SEM * sem : the semaphore
-	@params char * event : the event (waiting, entered, signaled... )
-
-*/
+     * \fn log_sem_generic(RT_SEM * sem, const char * event)
+     * \brief 	generic method to log en event regarding a semaphore
+	 * \param  RT_SEM * sem : the semaphore
+	 * \param  char * event : the event (waiting, entered, signaled... )
+     */
 void log_sem_generic(RT_SEM * sem, const char * event){
 	if(recording_enabled){
 		message_log m;
@@ -300,41 +296,40 @@ void log_sem_generic(RT_SEM * sem, const char * event){
 }
 
 /**
-	logs when the task is waiting at a semaphore
-	must be written just before the rt_sem_p();
-	@params RT_MUTEX * mut : the mutex
-*/
+     * \fn log_sem_waiting(RT_SEM * sem)
+     * \brief 	logs when the task is waiting at a semaphore, it must be written just before the rt_sem_p();
+	 * \param  RT_SEM * sem : the semaphore
+     */
 void log_sem_waiting(RT_SEM * sem){
 	log_sem_generic(sem, "waiting");
 }
-/**
-	logs when the task has entered a semaphore
-	must be written just after the rt_sem_p();
-	@params RT_MUTEX * mut : the mutex
-*/
 
+/**
+     * \fn log_sem_entered(RT_SEM * sem)
+     * \brief 	logs when the task has entered a semaphore, it must be written just after the rt_sem_p()
+	 * \param  RT_SEM * sem : the semaphore
+     */
 void log_sem_entered(RT_SEM * sem){
 	log_sem_generic(sem, "entered");
 }
 
+
 /**
-	logs when the task signals a semaphore
-	must be written just before the rt_sem_v();
-	@params RT_MUTEX * mut : the mutex
-*/
+     * \fn log_sem_signaled(RT_SEM * sem)
+     * \brief 	logs when the task signals a semaphore, it must be written just before the rt_sem_v()
+	 * \param  RT_SEM * sem : the semaphore
+     */
 void log_sem_signaled(RT_SEM * sem){
 	log_sem_generic(sem, "signaled");
 }
 
 
 /**
-
-	generic method to log en event regarding a task
-
-	@params RT_TASK * task : the task
-	@params char * event : the event (waiting, entered, signaled... )
-
-*/
+     * \fn log_task_generic(RT_TASK * task,  const char * event)
+     * \brief 	generic method to log en event regarding a task
+	 * \param  RT_TASK * task : the task
+	 * \param char * event : the event (waiting, entered, signaled... )
+     */
 void log_task_generic(RT_TASK * task,  const char * event){
 	if(recording_enabled){
 		message_log m;
@@ -354,37 +349,43 @@ void log_task_generic(RT_TASK * task,  const char * event){
 }
 
 /**
-	logs when a task begins
-	must be called at the begining of the function
+	logs when a task begins, it must be called at the begining of the function
 	no need to give a reference to the task
 */
+/**
+     * \fn void log_task_entered()
+     * \brief 	logs when a task begins, it must be called at the begining of the function
+     * \param no need to give a reference to the task
+     */
 void log_task_entered(){
 	log_task_generic(NULL, "entered");
 }
 
+
 /**
-	logs when a task begins a new iteration
-	must be called after the beginning of the function's loop
-	no need to give a reference to the task
-*/
+     * \fn void log_task_new_iteration()
+     * \brief 	logs when a task begins a new iteration, it must be called after the beginning of the function's loop
+     * \param no need to give a reference to the task
+     */
 void log_task_new_iteration(){
 	log_task_generic(NULL, "new iteration");
 }
 
+
 /**
-	logs when a task ends
-	must be called at the end of the function
-	no need to give a reference to the task
-*/
+     * \fn void log_task_ended()
+     * \brief logs when a task ends, it must be called at the end of the function
+     * \param no need to give a reference to the task
+     */
 void log_task_ended(){
 	log_task_generic(NULL, "ended");
 }
 
 /**
-	logs when a task is deleted
-	must be called at before the rt_delete_task()
-	@params RT_TASK * task : address of the task that is deleted
-*/
+     * \fn void log_task_deleted(RT_TASK * task)
+     * \brief 	logs when a task is deleted, it must be called at before the rt_delete_task()
+	 * \param RT_TASK * task : address of the task that is deleted
+     */
 void log_task_deleted(RT_TASK * task){
 
 	if(recording_enabled){

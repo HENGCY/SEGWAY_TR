@@ -60,7 +60,7 @@ int init_socket(int port){
 	@params char * str : string qui doit être envoyé à l'affichage
 	@params char label : label de la donnée (voir format d'envoi)
 	@params float data : donnée
-	@params
+	@params int indice : indice de tableau
 */
 
 void add_info_float(unsigned char * str, char label, float data,int * indice ){
@@ -68,7 +68,6 @@ void add_info_float(unsigned char * str, char label, float data,int * indice ){
 	float tampon=100000.05f + data;
 	unsigned char* f =(unsigned char*)&tampon;
 
-	//rt_printf("%c%c%c%c\n",f[0],f[1],f[2],f[3]);
 	str[ind ++] = '<';
 	str[ind ++] = label;
 	str[ind ++] = f[0];
@@ -86,7 +85,7 @@ void add_info_float(unsigned char * str, char label, float data,int * indice ){
 	@params char * str : string qui doit être envoyé à l'affichage
 	@params char label : label de la donnée (voir format d'envoi)
 	@params int data : donnée
-	@params
+	@params int indice : indice de tableau
 */
 
 void add_info_int(unsigned char * str, char label, int data,int * indice ){
@@ -94,7 +93,6 @@ void add_info_int(unsigned char * str, char label, int data,int * indice ){
 	float tampon=100000.05f + data;
 	unsigned char* f =(unsigned char*)&tampon;
 
-	//rt_printf("%c%c%c%c\n",f[0],f[1],f[2],f[3]);
 	str[ind ++] = '<';
     	str[ind ++] = label;
     	str[ind ++] = f[0];
@@ -112,12 +110,9 @@ void add_info_int(unsigned char * str, char label, int data,int * indice ){
 	@params int sock : numéro de socket
 	@params char * msg : tableau de caractères à envoyer, maximum 256 caractères
 */
-
 void send_trame(int sock, unsigned char * msg,int* indice){
 	int j =* indice ;
-	//rt_printf("%s\n",msg);
 	/* write a message to the server */
 	write(sock, msg, j);
 	*indice=0;
-
 }

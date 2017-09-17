@@ -1,13 +1,13 @@
 /**
  * \file vitesse.h
- * \brief Déclaration de la classe Vitesse.
+ * \brief Déclaration de la classe Beta.
  * \author INSA Toulouse
  * \version 1.0
  * \date 25 Juillet 2017
  */
 
-#ifndef VITESSE_H
-#define VITESSE_H
+#ifndef BETA_H
+#define BETA_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,14 +15,14 @@ extern "C" {
 
 #include "constantes.h"
 
-class Vitesse{
+class Beta{
 	private :
-		float _vitesse;
+		float _beta;
 	public :
-		Vitesse();
-		void set_vitesse(float vitesse);
-		float vitesse();
-		~Vitesse(void);
+		Beta();
+		void set_beta(float beta);
+		float beta();
+		~Beta(void);
 };
 #ifdef __cplusplus
 }

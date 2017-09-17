@@ -5,37 +5,33 @@
 #define _GNU_SOURCE 1
 #endif
 
-#define PORT_GUI 8000
+/* Ports utilisés pour la communication socket */
+#define PORT_GUI 8000 
 #define PORT_LOG 8001
-#define MAX_SIZE 1024 /*Taille maximum en octets du string lu sur le socket_log, contenant des lignes de log */
 
+/*Taille maximum en octets du string lu sur le socket_log, contenant des lignes de log */
+#define MAX_SIZE 1024 
+
+/*Include */
 #include <gtk/gtk.h>
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include <assert.h>
-#include <sys/mman.h>
-#include <time.h>
 #include "gui.h"
-#include <signal.h>
 #include <malloc.h>
-#include <pthread.h>
 #include <errno.h>
-#include <fcntl.h>
-#include <sys/types.h>
 #include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
 #include <netdb.h>
 #include <sys/file.h>
 
 /* Declaration des variables partagees*/
+/* Ces variables contiennent les informations du Gyropode à afficher sur le GUI */
  double angle, vit_ang, vit_lin, couple;
- int bat_lvl, etat_com, sckt_gui, sckt_log;
- int pass,arret,presence,c;
+ int bat_lvl, etat_com, arret, presence;
+
+ int sckt_gui, sckt_log;	// Identifiants des sockets, récupérés lors de l'appel à la fonction socket(...)
+ int pass,compteur;	
 
 /* Structure contenant les differents Widgets a afficher */
 typedef struct {

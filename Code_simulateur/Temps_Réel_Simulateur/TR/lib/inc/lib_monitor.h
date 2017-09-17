@@ -25,7 +25,6 @@ typedef struct
   char sarg2[SARG_SIZE];
   int iarg0;
   int iarg1;
-
 } message_log;
 
 #ifdef	__cplusplus

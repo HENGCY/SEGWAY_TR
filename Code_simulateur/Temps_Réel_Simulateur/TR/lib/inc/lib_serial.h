@@ -10,9 +10,7 @@
 
 #include "../../includes.h"
 
-
-#define MESSAGE_SERIAL_LENGTH 7
-#define MESSAGE_SERIAL_LENGTH_READ 35
+#define MESSAGE_SERIAL_LENGTH 37
 #define MESSAGE_TIMEOUT_NS 2000
 
 typedef struct
@@ -21,6 +19,14 @@ typedef struct
   float value;
 } message_serial;
 
+typedef struct
+{
+	char label;
+	float fval;
+	int ival;
+} message_stm;
+
+extern int lost_com;
 
 #ifdef	__cplusplus
 extern "C" {
@@ -30,14 +36,11 @@ extern "C" {
   message_serial* read_from_serial();
   int send_float_to_serial(float fl_value, char label);
   int send_int_to_serial(int int_value, char label);
-
   int bytes_to_array_of_message(unsigned char * mesg, message_serial *m);
-
   float bytes_to_float(unsigned char * bytes);
-  int bytes_to_message(unsigned char * mesg, message_serial * m);
   int close_serial();
 
-  void printf_trame(message_serial *m);
+  void write_trame_to_data(message_serial *m);
   
 #ifdef	__cplusplus
 }
