@@ -44,4 +44,4 @@ Le simulateur est fait par la carte STM32 qui est le même comme le vrai gyropod
 L'interface graphique :
 ----------
 > **GUI en RPi 3 :**
-L'interface graphique est codée en Python. Il affiche des informations en temps réel de STM32 et les affiche. Il affiche également l'état de Segway 
+L'interface graphique est codée en c avec les libraires de GTK+ 3. Il affiche des informations en temps réel de STM32 en recevant des informations à travers de socket. Il affiche également l'état de Segway et le log de programme temps réel
