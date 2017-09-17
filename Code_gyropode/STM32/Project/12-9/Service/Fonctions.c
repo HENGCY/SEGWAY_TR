@@ -74,7 +74,7 @@ float AccBuffer[3] = {0.0f}, Buffer[3] = {0.0f};	// tableau pour lecture de vale
 
 //Variable de vitesse lineaire du système
 float VitesseLineaire=0;
-float moy_vit=0;																	// variable  pour moyenner la vitesse lineaire  
+float tampon_vit=0;																	// variable  pour moyenner la vitesse lineaire  
 int compt_vit=0; 																	// variable de compteur pour moyenner la vitesse lineaire  
 
 //	Variable for gestion de consigne
@@ -263,17 +263,17 @@ void Trait_b_courant (void) {
 	*/
 	if (arret == 1){
 		STM_EVAL_LEDOn(LED10);
-		if(Consigne1 >= -0.2f && Consigne1 <= 0.2f){
+		if(Consigne1 >= -0.02f && Consigne1 <= 0.02f){
 			Consigne1 = 0.0f;
 			Consigne2 = 0.0f;
 		}
 		else if(Consigne1 > 0.0f){
-			Consigne1 -= 0.01f;
-			Consigne2 -= 0.01f;
+			Consigne1 -= 0.001f;
+			Consigne2 -= 0.001f;
 		}
 		else if(Consigne1 < 0.0f){
-			Consigne1 += 0.01f;
-			Consigne2 += 0.01f;
+			Consigne1 += 0.001f;
+			Consigne2 += 0.001f;
 		}
 	}else{
 		STM_EVAL_LEDOff(LED10);
@@ -397,10 +397,10 @@ void Trait_b_courant (void) {
 	TIM_SetCompare2( TIM1,  PWM_MOTEUR2);		// ecriture de CCR2 de 16 bits		
 	
 	if (compt_vit> 20){
-		VitesseLineaire= moy_vit/20.0f;
+		VitesseLineaire= tampon_vit/20.0f;
 		compt_vit=0;
 	}else{
-		moy_vit = (((2.0f * u1_k - 1.0f) - 0.47f * IM1) * Rw) / (Km * Kg);
+		tampon_vit = tampon_vit + (((2.0f * u1_k - 1.0f) - 0.47f * IM1) * Rw) / (Km * Kg);
 		compt_vit++;
 	}
 
