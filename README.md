@@ -7,18 +7,14 @@ La supervision en temps réel et l'asservissement en angle est dans la partie de
 
 Connexion:
 ----------
-1.  La connexion entre les 2 cartes est faite via l'interface UART.
-2.  La connexion Bluetooth de Smartphone et Raspberry Pi 
-
-Pour la simulation, la connexion est fait en serial (USB) de Raspberry Pi, MBED(ou STM32) et PC 
-	
+La connexion entre les 2 cartes est faite via l'interface UART.
+La communication entre de taches temps réel et non temps réel est faite à travers de sockets
 
 Raspberry Pi 3:
 ----------
 Description : 
 La carte de Raspberry Pi 3 est la carte de supervision du système de gyropode.
 Le cadre applicatif (Framework) de temps réel utilisé est Xenomai v3. Le noyau du système se fait en co-noyau de Linux et Cobalt de Xenomai. 
-
 
 > **Fonctions:**
 1. Supervision de système
@@ -36,19 +32,16 @@ La carte STM32 Discovery est une carte microcontrôleur qui comprend également 
 > **Fonctions:**
 1. Régulation de boucle de courant (commande par Raspberry Pi 3 à 50 Hz)
 2. Gestion de l'envoi des informations (94 Hz) 
-
+. Gestion de la direction de gyropode
 
 
 Partie Simulateur :
 ----------
 
-Le simulateur est fait par la carte MBED (écrit en C++) et on a pu simuler le système de Segway à travers de la liaison série entre Raspberry Pi3 et MBED. On implémente le modèle linéarisé du Segway pour faire les simulations mécaniques et les comportements du Segway.
+Le simulateur est fait par la carte STM32 qui est le même comme le vrai gyropode . On a pu simuler le système de Segway à travers de la liaison série entre Raspberry Pi3 et STM32. On implémente le modèle linéarisé du Segway pour faire les simulations mécaniques et les comportements du Segway. Des potentiomètres et un bouton switch est pour simuler les conditions du gyropode comme le nivequ du batterie et la présence de l'utilisateur
 
 
 L'interface graphique :
 ----------
-> **1. Simulateur en PC:**
-L'interface graphique (.Net) est codée par Windows Forms en C# dans IDE Visual Studio. Il est executable sur Windows 10 
-
-> **2. GUI en RPi 3 :**
+> **GUI en RPi 3 :**
 L'interface graphique est codée en Python. Il affiche des informations en temps réel de STM32 et les affiche. Il affiche également l'état de Segway 
