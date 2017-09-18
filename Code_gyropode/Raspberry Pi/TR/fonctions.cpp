@@ -293,26 +293,6 @@ void Envoyer(void *arg){
 		else if(m.label == 'a'){
 			send_int_to_serial(m.ival,'a');
 		}
-
-		/*log_sem_waiting(&var_sem_envoyer);
-		rt_sem_p(&var_sem_envoyer,TM_INFINITE);
-		log_sem_entered(&var_sem_envoyer);
-
-		rt_mutex_acquire(&var_mutex_consigne_couple, TM_INFINITE);
-		log_mutex_acquired(&var_mutex_consigne_couple);
-
-		send_float_to_serial(consigne_couple.consigne(),'c');
-
-		rt_mutex_release(&var_mutex_consigne_couple);
-		log_mutex_released(&var_mutex_consigne_couple);
-
-		rt_mutex_acquire(&var_mutex_arret, TM_INFINITE);
-		log_mutex_acquired(&var_mutex_arret);
-		if(arret){
-			send_int_to_serial(arret,'a');
-		}
-		rt_mutex_release(&var_mutex_arret);
-		log_mutex_released(&var_mutex_arret);*/
 	}
 }
 
@@ -338,6 +318,7 @@ void Affichage(void *arg){
 
 		str = (unsigned char*)malloc(56* sizeof(unsigned char)); // 56 = (n * 7 ) avec n nombre de fonctions "add_info"
 
+		/* Acquisition des valeurs des variables partagées */
 		rt_mutex_acquire(&var_mutex_etat_angle, TM_INFINITE);
 		log_mutex_acquired(&var_mutex_etat_angle);
 
@@ -395,6 +376,7 @@ void Affichage(void *arg){
 		rt_mutex_release(&var_mutex_arret);
 		log_mutex_released(&var_mutex_arret);
 
+		/* Ajoute au string str chaque information à envoyer */
  		add_info_float(str,'p',tamp1,&indice);
 		add_info_float(str,'s',tamp2,&indice);
 		add_info_float(str,'v',tamp3,&indice);
