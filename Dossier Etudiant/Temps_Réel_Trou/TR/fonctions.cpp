@@ -8,7 +8,10 @@
 #include "fonctions.h"
 
 /* La tâche Asservissement, en fonction de la mise à jour ou non des valeurs du STM32,
- *  calcule puis envoie dans la file de message une nouvelle consigne de courant pour le STM */
+ * calcule puis envoie dans la file de message une nouvelle consigne de courant pour le STM
+ * fonctions : rt_queue_write pour écrire dans la file de message
+ * variables : etat_com, etat_angle, etat_reception, consigne_couple
+ * semaphore : sem_envoyer */
 void Asservissement(void *arg) 
 {
 	
@@ -25,14 +28,18 @@ void Asservissement(void *arg)
 }
 
 /* La tâche Presence_User vérifie périodiquement la présence de l'utilisateur sur le gyropode
- *  déclenche l'arrêt d'urgence si l'utilisateur n'est pas présent */
+ *  déclenche l'arrêt d'urgence si l'utilisateur n'est pas présent
+ * variables : etat_com, presence_user
+ * semaphore : sem_arret */
  void Presence_User(void *arg) 
 {
 	
 }
 
 /* La tâche Surveillance_Batterie vérifie périodiquement le niveau de batterie du gyropode
- *  déclenche l'arrêt d'urgence si la batterie est trop faible (<15%) */
+ *  déclenche l'arrêt d'urgence si la batterie est trop faible (<15%)
+ * variables : etat_com, presence_user, batterie, arret
+ * semaphore : sem_arret */
  void Surveillance_Batterie(void *arg) /* OK */
 {
 	int com, arr, pres;
@@ -52,7 +59,9 @@ void Asservissement(void *arg)
 
 /* La tâche Communication est chargée de mettre en place la communication avec le STM32,
  *  à la réception d'un mesage du STM, elle décripte la trame et met à jour les informations
- *  des variables partagées. */
+ *  des variables partagées.
+ * fonctions : init_serial, read_from_serial, printf_trame
+ * variables : etat_com, etat_reception */
 void Communication(void *arg) 
 {
 	int uart0_filestream = -1;
@@ -85,9 +94,11 @@ void Communication(void *arg)
 	 }   
 }
 
-/* La tâche Affichage communique à l'interface graphique (GUI) (qui s'éxécute dans le noyau Linux) à travers un socket, 
+/*  La tâche Affichage communique à l'interface graphique (GUI) (qui s'éxécute dans le noyau Linux) à travers un socket, 
  *  les valeurs des variables partagées du programme de temps réel
- *  cette fonction n'a pas à être modifiée, à part modification du GUI et ajout d'informations à envoyer */
+ *  cette fonction n'a pas à être modifiée, à part modification du GUI et ajout d'informations à envoyer 
+ * fonctions : add_info_float, send_trame
+ * variables : etat_angle, vitesse_lin, consigne_couple, batterie, presence_user, etat_com, arret */
 void Affichage(void *arg){
 
 	unsigned char *str;
@@ -181,7 +192,10 @@ void Affichage(void *arg){
 }
 
 /* Cette fonction peut être déclenchée par les threads Presence_user et Surveillance_Batterie,
- *  elle envoie alors sur la file de messages un message de type arrêt ('a',1) qui sera envoyé au STM32 */
+ *  elle envoie alors sur la file de messages un message de type arrêt ('a',1) qui sera envoyé au STM32
+ * fonctions : rt_queue_write pour écrire dans la file de message, rt_sem_p pour attendre la libération du sémaphore
+ * variables : arret */
+
 void Arret_Urgence(void *arg){	
 
 	log_task_entered();
@@ -192,7 +206,10 @@ void Arret_Urgence(void *arg){
 }
 
 /* La tâche Envoyer est simplement chargée d'envoyer les messages contenus dans la file de messages
- *  au STM32 à travers la liaison UART */
+ *  au STM32 à travers la liaison UART
+ * fonctions : rt_queue_read, send_float_to serial, send_int_to_serial
+ * variables : etat_com, etat_angle, etat_reception, consigne_couple */
+
 void Envoyer(void *arg){
 
 	rt_printf("Thread Envoyer : Debut de l'éxecution de periodique à 100 Hz\n");
